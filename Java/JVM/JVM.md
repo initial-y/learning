@@ -120,7 +120,7 @@ Java堆是垃圾回收管理的主要区域，所以有时候Java堆也被称为
 
 方法区有一个别名是Non-Heap。
 
-方法区也常常被称为”永久代“（Permanent Generation），其实方法区与永久代并不等价，只是因为HotSpot虚拟机选择吧GC分代收集扩展至方法区而已。事实上，GC行为在这个区域是比较少出现的，此区域的内存回收目标主要是针对常量池的回收和对类型的卸载。此外，此区域的回收效率并不高，比如对类型的卸载回收的条件非常苛刻。
+方法区也常常被称为”永久代“（Permanent Generation），其实方法区与永久代并不等价，只是因为HotSpot虚拟机选择把GC分代收集扩展至方法区而已。事实上，GC行为在这个区域是比较少出现的，此区域的内存回收目标主要是针对常量池的回收和对类型的卸载。此外，此区域的回收效率并不高，比如对类型的卸载回收的条件非常苛刻。
 
 #### 运行时常量池
 
@@ -161,14 +161,30 @@ Class文件中除了有类的版本、字段、方法、接口等描述信息之
 ```java
 Object objA = new Object();
 Object objB = new Object();
-objA.instance = objB;
-objB.instance = objA;
+objA = objB;
+objB = objA;
 objA = null;
 objB = null;
 System.gc();
 ```
 
 如果Java虚拟机使用引用计数法来管理内存，那么上面代码中的objA和objB就不会被回收，事实上运行上述代码这两个对象是会被回收的，侧面反映了Java虚拟机并不是使用引用计数法来判断对象是否存活的。
+
+```java
+[GC (System.gc()) [PSYoungGen: 11812K->1725K(76288K)] 11812K->1725K(251392K), 0.0412083 secs] [Times: user=0.03 sys=0.00, real=0.05 secs] 
+[Full GC (System.gc()) [PSYoungGen: 1725K->0K(76288K)] [ParOldGen: 0K->1622K(175104K)] 1725K->1622K(251392K), [Metaspace: 5292K->5292K(1056768K)], 0.0449067 secs] [Times: user=0.03 sys=0.00, real=0.05 secs] 
+Heap
+ PSYoungGen      total 76288K, used 1310K [0x000000076b400000, 0x0000000770900000, 0x00000007c0000000)
+  eden space 65536K, 2% used [0x000000076b400000,0x000000076b547b08,0x000000076f400000)
+  from space 10752K, 0% used [0x000000076f400000,0x000000076f400000,0x000000076fe80000)
+  to   space 10752K, 0% used [0x000000076fe80000,0x000000076fe80000,0x0000000770900000)
+ ParOldGen       total 175104K, used 1622K [0x00000006c1c00000, 0x00000006cc700000, 0x000000076b400000)
+  object space 175104K, 0% used [0x00000006c1c00000,0x00000006c1d958f0,0x00000006cc700000)
+ Metaspace       used 5307K, capacity 5500K, committed 5632K, reserved 1056768K
+  class space    used 615K, capacity 659K, committed 768K, reserved 1048576K
+```
+
+
 
 #### 可达性分析算法
 
@@ -180,7 +196,7 @@ System.gc();
 
 ##### GC Roots
 
-- 虚拟机栈中（栈帧中的本地变量表）引用的对象
+- 虚拟机栈中（栈帧中的局部变量表）引用的对象
 - 本地方法栈中JNI（native方法）引用的对象
 - 方法区中类静态属性引用的对象
 - 方法区中常量引用的对象
