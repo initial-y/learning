@@ -370,7 +370,20 @@ CMS虽然有**并发收集**和**低停顿**的特点，但是也有3个比较�
 
 #### Serial Old收集器
 
+Serial Old收集器是Serial收集器的老年代版本，是一个单线程收集器，使用**标记-整理**算法。
+
+Serial Old收集器的主要也是给**Client模式**下的虚拟机使用。
+
+在Server模式下，Serial Old收集器主要还有两大用途：
+
+- 一是在JDK1.5及之前的版本中与Parallel Scavenge收集器搭配使用
+- 而是作为CMS收集器的后备预案，在并发收集发生Concurrent Mode Failure时使用
+
 #### Parallel Old收集器
+
+Parallel Old是Parallel Scavenge收集器的老年代版本，是**多线程**收集器，使用**标记-整理**算法。Prallel Old收集器是从JDK1.6开始使用的。
+
+在JDK1.6之前，如果新生代选择了PS收集器，老年代除了Serial收集器之外没有其他的选择。
 
 #### G1收集器
 
