@@ -141,3 +141,5 @@ New I/O，同步非阻塞模式的IO，从Java1.4中引入，对应`java.nio`包
 # 参考
 
 - [深入分析 Java I/O 的工作机制](https://www.ibm.com/developerworks/cn/java/j-lo-javaio/index.html)
+- [Linux和Java的I/O模型](https://yasinshaw.com/articles/52)
+- [怎样理解阻塞非阻塞与同步异步的区别？](https://www.zhihu.com/question/19732473)
