@@ -112,9 +112,25 @@ BIO模型图：
 
 #### IO多路复用
 
+IO多路复用通过一种机制，可监视多个描述符，一旦某个描述符就绪（一般是读就绪或者写就绪），能够通知程序进行相应的读写操作。
+
+IO多路复用技术就是为了解决线程阻塞到某个IO系统而出现的技术，使进程不阻塞于某个特定的IO系统调用。
+
 IO多路复用模型：
 
 ![IO多路复用](./imgs/IO多路复用.jpg)
+
+select函数：
+
+select函数主要是监视并等待多个文件描述符的属性变化（可读、可写或错误异常）。
+
+select()函数监视的文件描述符分 3 类，分别是writefds、readfds、和exceptfds。调用后select() 函数会阻塞，直到有描述符就绪（有数据可读、可写、或者有错误异常），或者超时（ timeout 指定等待时间），函数才返回。当select()函数返回后，可以通过遍历 fdset，来找到就绪的描述符。
+
+该函数准许进程指示内核等待多个事件中的任何一个发送，并且只在有一个或多个事件发生或经历一段指定的时间后才被唤醒。
+
+该函数成功返回就绪描述符的数目，超时返回0.
+
+
 
 #### 信号驱动
 
@@ -143,3 +159,4 @@ New I/O，同步非阻塞模式的IO，从Java1.4中引入，对应`java.nio`包
 - [深入分析 Java I/O 的工作机制](https://www.ibm.com/developerworks/cn/java/j-lo-javaio/index.html)
 - [Linux和Java的I/O模型](https://yasinshaw.com/articles/52)
 - [怎样理解阻塞非阻塞与同步异步的区别？](https://www.zhihu.com/question/19732473)
+- [[Linux I/O多路复用](https://www.linuxprobe.com/linux-io-multiplexing.html)]
