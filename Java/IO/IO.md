@@ -76,6 +76,14 @@ Java.io是大多数面向数据流的输入、输出类的主要软件。此外�
 - 性能提高： 主要以增加缓冲的方式来提高输入输出效率
 - 操作更便捷： 处理流提供了一系列便捷的方法允许一次性输入输出大批量的内容，而不是单个字符/字节
 
+#### 
+
+#### 输入输出流体系中常用的流的分类表
+
+![流的分类](./imgs/流的分类.png)
+
+
+
 ### 用户空间和内核空间
 
 Linux将内存分为了用户空间和内核空间，只有内核空间可以直接调用硬件（磁盘、网卡等）。我们平时的用户进程一般是在用户空间，所以用户空间的进程要进行IO操作，需要与内核空间一起协作。
@@ -179,17 +187,61 @@ epoll的优点：
 
 Blocking I/O，同步阻塞模式的IO，数据的读取和写入必须阻塞在一个线程内等待其完成，效率较低。
 
+Java IO流的40多个类都是从如下4个抽象类基类中派生出来的：
+
+- **`InputStream/Reader`**:所有输入流的基类，InputStream是字节流，Reader是字符流。
+- **`OutputStream/Writer`**:所有输出流的基类，OutputStream是字节流，Writer是字符流。
+
+#### 应用
+
 Tomcat使用多线程+BIO来实现web server。
 
 数据库连接池使用线程池+BIO来实现。
+
+#### 实践 todo
 
 ### NIO
 
 New I/O，同步，同时支持阻塞与非阻塞模式，主要使用非阻塞，从Java1.4中引入，对应`java.nio`包，提供了`Channel`、`Selector`、`Buffer`等接口或抽象方法。
 
+#### Buffer
+
+Java NIO Buffers用于和NIO Channel交互。通常是从Channel中读取数据到Buffer里，或者从Buffer把数据写入到Channel里。
+
+Buffer本质上就是一块内存区域。
+
+Buffer的三个关键属性：
+
+- capacity
+- position
+- limit
+
+Buffer有对应除了布尔类型的其他七种基本数据类型的实现：ByteBuffer、CharBuffer、ShortBuffer、IntBuffer、 LongBuffer、FloatBuffer、DoubleBuffer。除此之外还有MappedByteBuffer、HeapByteBuffer、DirectByteBuffer等相对复杂的实现。
+
+- HeapByteBuffer：该Buffer的内存空间在 JVM 的 heap（堆）上分配，可以看做是 jdk 对于 byte[] 数组的封装
+- DirectByteBuffer：直接利用系统接口进行内存申请，其内存分配在c heap中，减少了内存之间的拷贝操作，在使用DirectByteBuffer时，系统等于是直接从内存将数据写入到Channel中，无需进行Java堆的内存申请。
+
+为什么不直接使用 DirectByteBuffer，还要来个 HeapByteBuffer？
+
+> DirectByteBuffer 是通过full gc来回收内存的，DirectByteBuffer会自己检测情况而调用 system.gc()，但是如果参数中使用了 DisableExplicitGC 那么就无法回收该快内存了，-XX:+DisableExplicitGC标志自动将 System.gc() 调用转换成一个空操作，就是应用中调用 System.gc() 会变成一个空操作，那么如果设置了就需要我们手动来回收内存了，所以DirectByteBuffer使用起来相对于完全托管于 java 内存管理的Heap ByteBuffer 来说更复杂一些，如果用不好可能会引起OOM。Direct ByteBuffer 的内存大小受 -XX:MaxDirectMemorySize JVM 参数控制（默认大小64M），在 DirectByteBuffer 申请内存空间达到该设置大小后，会触发 Full GC。
+
+#### Channel
+
+Channel和IO中的Stream差不多是一个等级，只不过IO中的流是单向的，而Channel是双向的，可读可写。
+
+NIO中的Channel的主要实现有：FileChannel、DatagramChannel、SocketChannel、ServerSocketChannel，分别对应文件IO、UDP和TCP（Server和Client）。
+
+#### Selector
+
+选择器，也可以称为多路复用器。用于检查一个或多个NIO Channel的状态是否处于可读或可写。Selector 运行单线程处理多个 Channel，如果应用打开了多个通道，而且每个的连接的流量都很低，使用Selector就是很好的选择。
+
+在NIO中，通过对Selector的使用，可以用更少连接来处理channel，降低了上下文切换带来的开销。
+
+#### 实践 todo
+
 ### AIO
 
-异步非阻塞IO模型。
+AIO是在Java 7中引进的NIO改进版，是异步非阻塞的IO模型。异步是基于事件和回调机制实现，数据准备好了通知调用者（在NIO中需要通过轮询来确定是否有数据准备好可读可写）。
 
 # 参考
 
