@@ -76,13 +76,73 @@ List的实现是一个双向链表，支持反向查找和遍历，方便操作�
 
 常见应用场景：微博的关注列表、粉丝列表、消息列表。
 
-
-
 ### Set
+
+Set是String类型的无序集合，集合成员具有唯一性。
+
+Set底层是由hash表实现的，添加、删除、查找的复杂度都是`$O(1)$`。
+
+Set的最大成员数是 `$2^32 -1$` 。
+
+常用命令： sadd、spop、smembers、sunion等
+
+Set提供了判断某个成员是否在一个Set集合内的接口（sismember），也提供了实现并集（sunion）、交集（sinter）、差集（sdiff）的操作。
+
+应用场景：微博应用中，可用sinter（sinterstore）实现两个微博账号的共同关注。
 
 ### Sorted Set
 
+Sorted Set是String类型的**有序集合**，集合成员也具有唯一性，但成员的score可以重复。
+
+与Set不同的是，Sorted Set的每个元素都会关联一个double类型的score，Redis底层通过score来为集合内的成员进行排序。
+
+同样，Sorted Set的底层也由hash表实现，添加、删除、查找的复杂度也为O(1)。
+
+Sorted Set集合的最大成员数也为`$2^32 - 1$`。
+
+常用命令：zadd、zrange、zrem、zcard等。Sorted Set也常备称为Zset。
+
+应用场景：各种直播系统带权重的实时排行信息，比如刷礼物用户排行榜。
+
+
+
 ## Redis的内存淘汰机制
+
+设定了Redis的内存使用限制为具体值后，当内存快要达到使用上限时，Redis会根据指定的**内存淘汰机制**删除key。
+
+Redis提供如下几种内存淘汰机制：
+
+### volatile-lru
+
+从已设置过期时间的数据集（server.db[i].expires）中挑选**最近最少使用**的数据淘汰。
+
+### volatile-ttl
+
+从已设置过期时间的数据集（server.db[i].expires）中挑选**将要过期**的数据淘汰。
+
+### volatile-random
+
+从已设置过期时间的数据集（server.db[i].expires）中**任意选择**数据淘汰。
+
+### volatile-lfu
+
+从已设置过期时间的数据集（server.db[i].expires）中挑选**最不常使用**的数据淘汰。Redis4.0版本新增。
+
+### allkeys-lru
+
+当内存不足以容纳新数据时，**在所有键空间中（server.db[i].dict），选择最近最少使用**的数据淘汰。这是最常用的内存淘汰策略。
+
+### allkeys-random
+
+从所有数据集（server.db[i].dict）中**任意选择数据**淘汰。
+
+### allkeys-lfu
+
+当内存不足以写入新数据时，在所有键空间（server.db[i].dict）中选择**最不常使用**的数据淘汰。Redis4.0新增。
+
+### no-eviction
+
+禁止淘汰数据。当内存不足以写入新数据时，此时再做写入数据操作会报错。
 
 ## Redis的持久化机制
 
