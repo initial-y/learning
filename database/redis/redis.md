@@ -172,9 +172,31 @@ Redis持久化是将内存中的数据写入到硬盘里面。
 
 Redis目前支持**快照（snapshoting，RDB）**和**只追加文件（append-only file，AOF）**两种方式持久化。
 
-### 快照
+### 快照（RDB）
 
-### 只追加文件
+Redis通过创建快照来存储内存里的数据在某个时间点上的副本。
+
+快照是Redis默认的持久化方式。
+
+`redis.conf`中的配置格式如下：
+
+```properties
+save <seconds> <changes>
+```
+
+比如， `save 900 1`表示 900s后至少1个key发生变化，`save 300 10`表示300s后至少10个key发生变化，·save 60 10000`表示60s后至少1w个key发生变化，Redis都会触发BGSAVE命令创建快照。
+
+Redis创建快照的几种方法：
+
+- BGSAVE命令：客户端向Redis发送BGSAVE命令来创建一个快照。对于支持BGSAVE命令的所有平台（除Windows外的绝大多数平台），Redis调用fork来创建一个子进程，子进程负责将快照存入硬盘，父进程继续处理命令。
+- SAVE命令：客户端向Redis发送SAVE命令来创建一个快照，接到SAVE命令的Redis在创建快照完毕之前不会再响应其他命令。SAVE命令通常作为在没有足够内存去执行BGSAVE命令情况下的备选项。
+- save选项：redis.conf中设置的默认选项。详情如上。
+- SHUTDOWN命令：Redis收到SHUTDOWN命令请求关闭服务器时，会执行SAVE命令阻塞所有客户端，并在SAVE命令执行完毕后关闭服务器。
+- 不同Redis服务器之间的SYNC命令：如果主服务器目前没有执行BGSAVE操作，或主服务器并没有刚执行完BGSAVE操作，此时主服务器就会执行BGSAVE命令。
+
+快照持久化适用于即使丢失一部分数据也不会造成一些大问题的应用。如果不能接受数据的丢失，可以考虑适用AOF持久化。
+
+### 只追加文件（AOF）
 
 ## 常见问题
 
