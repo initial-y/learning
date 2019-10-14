@@ -123,25 +123,25 @@ int sum = i + k; // 3
 
 ```java
 // 成员变量
-int i = 0;
-int j = 2;
+int a = 0;
+boolean flag = false; // 不用volatile修饰
 
-// 可能发生重排序
-public void set() { // Thread-1
-    i = 2; // 1
-    j = 4; // 2
-}	
+public void writer() { // Thread-1
+    a = 1; // step 1
+    flag = true; // step 2
+}
 
-public int sum() { // Thread-2
-    int sum = i + j; // 3
-    return sum;
+public void reader() { // Thread-2
+    if (flag) { // step 3
+        System.out.println(a); // step 4
+    }
 }
 
 ```
 
-上述示例，假如线程Thread-1先执行set()，然后线程Thread-2再执行sum()，线程Thread-2执行sum()不一定得到6。在set()中，步骤1、2可能发生重排序。可能先执行步骤2，此时线程Thread-2如果执行了步骤3计算结果就和我们预期不一致。
+上述示例，假如线程Thread-1先执行writer()，然后线程Thread-2再执行reader()，线程Thread-2执行reader()不一定输出1。在writer()中，步骤1、2可能发生重排序。可能先执行步骤2，此时线程Thread-2如果执行到步骤3读取的flag为true输出的a的值就为0。
 
-此时如果想要保证set()方法在多线程条件下的有序性，有以下几个方法：
+此时如果想要保证writer()方法在多线程条件下的有序性，有以下几个方法：
 
 - `synchronized`关键字
 - `Lock` 接口
@@ -149,20 +149,99 @@ public int sum() { // Thread-2
 
 除了这几个方法之外，JMM具备一些既定的有序性，不需要任何手段就能在某些情况下保证有序，这些保证有序的规则通常被称为**happens-before原则**。（JSR-133：Java Memory Model and Thread Specification）
 
-1. 程序顺序规则
-2. 监视器锁规则
-3. volatile变量规则
-4. 传递性
-5. start()规则
-6. join()原则
-7. intterupt()原则
+1. 程序顺序规则：Each action in a thread happens before every subsequent action in that thread.
+2. 监视器锁规则：An unlock on a monitor happens before every subsequent lock on that monitor.
+3. volatile变量规则：A write to a volatile field happens before every subsequent read of that volatile.
+4. start()规则：A call to start() on a thread happens before any actions in the started thread.
+5. join()原则：All actions in a thread happen before any other thread successfully returns from a
+   join() on that thread.
+6. 传递性：If an action a happens before an action b, and b happens before an action c, then a
+   happens before c.
+7. interrupt()原则
 8. finalize()原则
 
 ## volatile
+
+JMM中的happens-before原则中的**volatile变量规则**：对一个`volatile`变量域的写，必然happens-before于对这个`volatile`的读。
+
+`volatile`关键字保证不管哪个线程对`volatile`修饰的变量进行了写操作，写入的值立即会更新至主内存；线程对该变量进行读操作时，JMM会把线程对应的本地内存置为无效，从主内存里读取刚写入的值。
+
+`volatile`关键字可以保证可见性和有序性。
+
+#### 为什么volatile无法保证原子性
+
+// todo volatile ++ ？
+
+#### volatile的应用
+
+1. 状态量标记， 比如：
+
+```Java
+// 成员变量
+int a = 0;
+volatile boolean flag = false;
+
+public void writer() { // Thread-1
+    a = 1; // step 1
+    flag = true; // step 2
+}
+
+public void reader() { // Thread-2
+    if (flag) { // step 3
+        System.out.println(a); // step 4
+    }
+}
+
+```
+
+`volatile`能保证修改的变量对所有线程可见。
+
+1. 单例模式的实现，典型的双重检查锁定（DCL）
+
+```Java
+class Singleton {
+    private volatile static Singleton instance = null; 
+ 
+    public static Singleton getInstance() {
+        if(instance == null) { // 第一次检查
+            synchronized (Singleton.class) {
+                if(instance == null) {  // 第二次检查
+                    // 1.分配内存 2.初始化对象 3.设置instance指向1刚分配的地址
+                    instance = new Singleton();
+                }
+            }
+        }
+        return instance;
+    }
+}
+
+```
+
+如果在声明变量时不使用`volatile`关键字，`instance = new Singleton()`有可能会被重排序：
+
+```Java
+instance = new Singleton();
+
+// 可以分解为以下三个步骤
+1 memory=allocate();// 分配内存 相当于c的malloc
+2 ctorInstanc(memory) //初始化对象
+3 s=memory //设置s指向刚分配的地址
+
+// 上述三个步骤可能会被重排序为 1-3-2，也就是：
+1 memory=allocate();// 分配内存 相当于c的malloc
+3 s=memory //设置s指向刚分配的地址
+2 ctorInstanc(memory) //初始化对象
+```
+
+如果发生了上述1->3->2的重排序，那么在DCL的第一次检查中，很有可能会读到已分配地址但是尚未完成初始化的`Singleton`对象。
 
 
 
 ## 参考
 
+- [Java内存模型基础知识](http://concurrent.redspider.group/article/02/6.html)
+- [重排序与happens-before](http://concurrent.redspider.group/article/02/7.html)
+- [volatile](http://concurrent.redspider.group/article/02/8.html)
+- [面试官最爱的volatile关键字](https://juejin.im/post/5a2b53b7f265da432a7b821c)
 - [并发编程的锁机制：synchronized和lock](https://juejin.im/post/5a43ad786fb9a0450909cb5f) 
 - [JSR-133](https://download.oracle.com/otndocs/jcp/memory_model-1.0-pfd-spec-oth-JSpec/)
