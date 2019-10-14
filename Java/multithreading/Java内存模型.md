@@ -105,4 +105,64 @@ JMM在基于as-if-serial语义的基础上，允许编译器和处理器对指�
 
 重排序的优点： 提高性能。
 
+单线程重排序代码示例:
+
+```java
+int i = 0;  // 1
+int j = 1;  // 2
+int sum = i + k; // 3
+```
+
+上述例子中， 由于1，2是独立的语句，所以**单线程**可以按1->2->3的顺序执行，也可以按2->1->3的顺序执行。
+
+### happens-before
+
+重排序不会影响单线程的执行结果，但在多线程条件下，重排序就有可能影响程序的执行结果。
+
+多线程重排序代码示例：
+
+```java
+// 成员变量
+int i = 0;
+int j = 2;
+
+// 可能发生重排序
+public void set() { // Thread-1
+    i = 2; // 1
+    j = 4; // 2
+}	
+
+public int sum() { // Thread-2
+    int sum = i + j; // 3
+    return sum;
+}
+
+```
+
+上述示例，假如线程Thread-1先执行set()，然后线程Thread-2再执行sum()，线程Thread-2执行sum()不一定得到6。在set()中，步骤1、2可能发生重排序。可能先执行步骤2，此时线程Thread-2如果执行了步骤3计算结果就和我们预期不一致。
+
+此时如果想要保证set()方法在多线程条件下的有序性，有以下几个方法：
+
+- `synchronized`关键字
+- `Lock` 接口
+- `volatile`关键字
+
+除了这几个方法之外，JMM具备一些既定的有序性，不需要任何手段就能在某些情况下保证有序，这些保证有序的规则通常被称为**happens-before原则**。（JSR-133：Java Memory Model and Thread Specification）
+
+1. 程序顺序规则
+2. 监视器锁规则
+3. volatile变量规则
+4. 传递性
+5. start()规则
+6. join()原则
+7. intterupt()原则
+8. finalize()原则
+
 ## volatile
+
+
+
+## 参考
+
+- [并发编程的锁机制：synchronized和lock](https://juejin.im/post/5a43ad786fb9a0450909cb5f) 
+- [JSR-133](https://download.oracle.com/otndocs/jcp/memory_model-1.0-pfd-spec-oth-JSpec/)
