@@ -236,6 +236,12 @@ finalize()方法是对象逃脱被回收命运的最后一次机会，随后GC�
 
 ![MarkSweep](./imgs/MarkSweep.jpg)
 
+原理图二:
+
+![标记清除算法原理](imgs/标记清除算法原理.jpg)
+
+使用标记-清除算法的垃圾收集器：老年代的CMS（concurrent mark sweep）
+
 #### 复制算法
 
 复制算法（Copying）是为了解决标记清除算法的效率问题而出现的算法。它将可用内存按容量划分为大小相等的两块，每次只使用其中的一块。当第一块的内存用完了，就将还活着的对象复制到另一块内存上面，然后再把已使用的第一块内存空间一次性清理掉。这样使得每次都是对整个半区进行内存回收，内存分配时也不用考虑内存碎片过多等复杂情况，只需移动堆顶指针按顺序分配即可，实现简单，运行高效。
@@ -250,6 +256,12 @@ finalize()方法是对象逃脱被回收命运的最后一次机会，随后GC�
 
 ![Copying](./imgs/Copying.jpg)
 
+复制算法示意图二：
+
+![复制算法原理](imgs/复制算法原理.jpg)
+
+使用复制算法的垃圾收集器：新生代的Serial、ParNew、Parallel Scavenge
+
 #### 标记-整理算法
 
 复制收集算法在对象存活率较高时需要进行较多的复制操作，此时效率将会变低。此外，如果不想浪费50%的空间，就需要有额外的空间进行分配担保，以应对垃圾回收后内存中所有对象都存活的极端情况，所以老年代一般不能用复制算法。
@@ -259,6 +271,14 @@ finalize()方法是对象逃脱被回收命运的最后一次机会，随后GC�
 标记整理算法执行过程如下：
 
 ![MarkCompact](./imgs/MarkCompact.jpg)
+
+标记整理原理图二：
+
+![标记整理原理](imgs/标记整理算法原理.jpg)
+
+使用标记整理的垃圾收集器有：老年代的Serial Old、Parallel Old
+
+> G1收集器同时收集新生代和老年代的垃圾，整体是标记-整理算法，不同Region之间是复制算法
 
 #### 分代收集算法
 
@@ -286,31 +306,35 @@ Java虚拟机规范并没有对垃圾收集器如何实现做任何规定，所�
 
 ![GarbageCollector](./imgs/GarbageCollectors.jpg)
 
+垃圾收集器关联图二：
+
+![垃圾收集器组合](imgs/垃圾收集器组合.jpg)
+
 注：如果两个收集器之前存在连线，表示他们可以搭配使用。
 
 #### Serial收集器
 
-Serial收集器是一个**单线程**收集器，Serial使用复制算法进行垃圾收集。它只会使用一个CPU或一个收集线程进行垃圾收集工作，更重要的是**Serial收集器在进行垃圾回收时必须暂停其他所有的工作线程（Stop The World），直到它收集结束**。
+Serial收集器是一个**单线程**收集器，Serial使用**复制算法**进行垃圾收集。它只会使用一个CPU或一个收集线程进行垃圾收集工作，更重要的是**Serial收集器在进行垃圾回收时必须暂停其他所有的工作线程（Stop The World），直到它收集结束**。
 
 STW由虚拟机由虚拟机在后台自动发起和自动完成，在用户不可见的情况下把用户正在工作的线程全部停掉。这对用户及其不友好。
 
-下图是Serial、Serial Old收集器的运行过程:
+下图是Serial（新生代） + Serial Old（老年代）收集器的运行过程:
 
 ![SerialOrSerialOld](./imgs/SerialAndSerialOld.jpg)
 
 #### ParNew收集器
 
-ParNew收集器其实就是Serial收集器的**多线程**版本。其余行为包括Serial可控制的参数、收集算法（复制算法）、STW、对象分配规则、回收策略等都与Serial收集器一样。
+ParNew收集器其实就是Serial收集器的**多线程**版本。其余行为包括Serial可控制的参数、**收集算法（复制算法）**、STW、对象分配规则、回收策略等都与Serial收集器一样。
 
 ParNew收集器是许多运行在Server模式下的虚拟机首选的新生代收集器。其中有一个与性能无关但很重要的原因是：新生代除了Serial收集器外，只有ParNew收集器能与CMS收集器配合工作（可参见关系图）。
 
-parNew、Serial Old收集器运行图如下：
+parNew（新生代）+ Serial Old（老年代）收集器运行图如下：
 
 ![ParNewAndSerialOld](./imgs/ParNewAndSerialOld.jpg)
 
 #### Parallel Scavenge收集器
 
-PS收集器是一个新生代收集器，使用复制算法，也是多线程的收集器。
+PS收集器是一个新生代收集器，使用**复制算法**，也是多线程的收集器。
 
 PS收集器的最大特点是它收集的目标是**达到一个可控制的吞吐量**（Throughput）。而其他比如CMS收集器的目标是尽可能地缩短垃圾收集时的停顿时间。
 
@@ -327,13 +351,13 @@ PS有一个参数-XX:+UseAdaptiveSizePolicy也很重要。这个是一个开关�
 
 自适应调节策略是PS收集器的一大重要特点。
 
-PS、P Old收集器运行流程如下：
+PS（新生代） + P Old（老年代）收集器运行流程如下：
 
 ![PsAndPold](./imgs/ParallelAndScavengeAndParallelOld.jpg)
 
 #### CMS收集器
 
-CMS（Concurrent Mark Sweep）收集器是一种以获取最短回收时间为目标的收集器。CMS的收集过程由标记-清除算法实现。
+CMS（Concurrent Mark Sweep）收集器是一种以获取最短回收时间为目标的老年代收集器。CMS的收集过程由**标记-清除算法**实现。
 
 CMS的运行过程主要由以下四步实现：
 
