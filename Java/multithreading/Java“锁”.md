@@ -198,7 +198,86 @@ atomicInteger.incrementAndGet(); //执行自增1
 >
 > 获得共享锁的线程只能读数据，不能修改数据。
 
+### 死锁
 
+死锁是指两个及以上的线程在执行过程中，由于竞争资源或彼此通信问题造成的一种阻塞现象，若无外力作用，它们都将无法推进下去。此时称系统处于死锁状态或系统产生了死锁，这些永远在互相等待的进程称为死锁进程。
+
+#### 代码示例
+
+```java
+public class DeadLock {
+
+    public static void main(String[] args) {
+        // 局部变量，方法调用后被加载在虚拟机栈
+        final Object lock1 = new Object();
+        final Object lock2 = new Object();
+        
+        Thread thread1 = new Thread(() -> {
+           // sychronized特性，互斥锁（排它锁，独享锁，与之对应的是共享锁）：该锁一次只能被一个线程所持有
+           synchronized (lock1) {
+               System.out.println("thread1 lock1");
+               try {
+                   // 此处用sleep方法是为了增大出现死锁几率，不用也行，多试几次
+                   // sleep方法不会释放锁
+                   Thread.sleep(1000L);
+               } catch (InterruptedException e) {
+                   e.printStackTrace();
+               }
+               // synchronized特性之，可重入锁：同一个线程在外层方法获取锁的时候，再进入该线程的内层方法会自动获取锁（前提锁对象得是同一个对象或者class），不会因为之前已经获取过还没释放而阻塞
+               // 如果sychronized不是可重入锁，那么光是调用`thread1.start()`执行到这里就会阻塞，此时lock1没释放
+               synchronized (lock2) {
+                   System.out.println("thread1 lock2");
+               }
+           }
+        });
+
+        Thread thread2 = new Thread(() -> {
+           synchronized (lock2) {
+               System.out.println("thread2 lock2");
+               try {
+                   Thread.sleep(1000L);
+               } catch (InterruptedException e) {
+                   e.printStackTrace();
+               }
+               synchronized (lock1) {
+                   System.out.println("thread2 lock1");
+               }
+           }
+        });
+
+        thread1.start();
+        thread2.start();
+    }
+
+}
+```
+
+输出
+
+```java
+// 1，2的顺序不固定，看线程心情（加锁快慢）
+thread1 lock1
+thread2 lock2
+```
+
+#### 死锁检测
+
+- `jps`获取进程号， `jstack`查看当前进程的堆栈信息（`jstack -h`获取使用帮助）
+- `jconsole`调用系统自带工具（windows）
+
+#### 如何预防死锁
+
+1. 以确定的顺序获得锁
+
+比如上面代码示例中，都以lock1-> lock2的顺序获取锁，就不会出现相互等待其他线程释放锁的情况。
+
+多线程，银行家算法。 // todo
+
+2. 超时放弃获得锁
+
+在使用`sychronized`提供的内置锁时，线程获取不到锁会一直等待。
+
+但在`Lock`接口中，提供了`boolean tryLock(long time, TimeUnit unit) throws InterruptedException;`，该方法可以让线程按照固定时长等待锁，该方法在指定时间内获取到锁返回`true`。
 
 # 参考
 
