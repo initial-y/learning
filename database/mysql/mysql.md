@@ -351,6 +351,77 @@ myisam表支持空间索引，可以用作地理数据存储。
 9. 冗余和重复索引
 10. 索引和锁
 
-### 
+### explain
 
-## 
+MySQL官方提供，分析MySQL是如何执行语句。
+
+explain可以作用于select、delete、insert、replace和update语句。
+
+**Table 8.1 EXPLAIN Output Columns**
+
+| Column                                                       | JSON Name       | Meaning                                        |
+| :----------------------------------------------------------- | --------------- | ---------------------------------------------- |
+| [`id`](https://dev.mysql.com/doc/refman/8.0/en/explain-output.html#explain_id) | `select_id`     | The `SELECT` identifier                        |
+| [`select_type`](https://dev.mysql.com/doc/refman/8.0/en/explain-output.html#explain_select_type) | None            | The `SELECT` type                              |
+| [`table`](https://dev.mysql.com/doc/refman/8.0/en/explain-output.html#explain_table) | `table_name`    | The table for the output row                   |
+| [`partitions`](https://dev.mysql.com/doc/refman/8.0/en/explain-output.html#explain_partitions) | `partitions`    | The matching partitions                        |
+| [`type`](https://dev.mysql.com/doc/refman/8.0/en/explain-output.html#explain_type) | `access_type`   | The join type                                  |
+| [`possible_keys`](https://dev.mysql.com/doc/refman/8.0/en/explain-output.html#explain_possible_keys) | `possible_keys` | The possible indexes to choose                 |
+| [`key`](https://dev.mysql.com/doc/refman/8.0/en/explain-output.html#explain_key) | `key`           | The index actually chosen                      |
+| [`key_len`](https://dev.mysql.com/doc/refman/8.0/en/explain-output.html#explain_key_len) | `key_length`    | The length of the chosen key                   |
+| [`ref`](https://dev.mysql.com/doc/refman/8.0/en/explain-output.html#explain_ref) | `ref`           | The columns compared to the index              |
+| [`rows`](https://dev.mysql.com/doc/refman/8.0/en/explain-output.html#explain_rows) | `rows`          | Estimate of rows to be examined                |
+| [`filtered`](https://dev.mysql.com/doc/refman/8.0/en/explain-output.html#explain_filtered) | `filtered`      | Percentage of rows filtered by table condition |
+| [`Extra`](https://dev.mysql.com/doc/refman/8.0/en/explain-output.html#explain_extra) | None            | Additional information                         |
+
+- id：查询标志符
+
+- select_type：查询类型，常见的有：
+
+  | `select_type` Value                                          | JSON Name                    | Meaning                                                      |
+  | ------------------------------------------------------------ | ---------------------------- | ------------------------------------------------------------ |
+  | `SIMPLE`                                                     | None                         | Simple [`SELECT`](https://dev.mysql.com/doc/refman/8.0/en/select.html) (not using [`UNION`](https://dev.mysql.com/doc/refman/8.0/en/union.html) or subqueries) |
+  | `PRIMARY`                                                    | None                         | Outermost [`SELECT`](https://dev.mysql.com/doc/refman/8.0/en/select.html) |
+  | [`UNION`](https://dev.mysql.com/doc/refman/8.0/en/union.html) | None                         | Second or later [`SELECT`](https://dev.mysql.com/doc/refman/8.0/en/select.html) statement in a [`UNION`](https://dev.mysql.com/doc/refman/8.0/en/union.html) |
+  | `DEPENDENT UNION`                                            | `dependent` (`true`)         | Second or later [`SELECT`](https://dev.mysql.com/doc/refman/8.0/en/select.html) statement in a [`UNION`](https://dev.mysql.com/doc/refman/8.0/en/union.html), dependent on outer query |
+  | `UNION RESULT`                                               | `union_result`               | Result of a [`UNION`](https://dev.mysql.com/doc/refman/8.0/en/union.html). |
+  | [`SUBQUERY`](https://dev.mysql.com/doc/refman/8.0/en/optimizer-hints.html#optimizer-hints-subquery) | None                         | First [`SELECT`](https://dev.mysql.com/doc/refman/8.0/en/select.html) in subquery |
+  | `DEPENDENT SUBQUERY`                                         | `dependent` (`true`)         | First [`SELECT`](https://dev.mysql.com/doc/refman/8.0/en/select.html) in subquery, dependent on outer query |
+  | `DERIVED`                                                    | None                         | Derived table                                                |
+  | `DEPENDENT DERIVED`                                          | `dependent` (`true`)         | Derived table dependent on another table                     |
+  | `MATERIALIZED`                                               | `materialized_from_subquery` | Materialized subquery                                        |
+  | `UNCACHEABLE SUBQUERY`                                       | `cacheable` (`false`)        | A subquery for which the result cannot be cached and must be re-evaluated for each row of the outer query |
+  | `UNCACHEABLE UNION`                                          | `cacheable` (`false`)        | The second or later select in a [`UNION`](https://dev.mysql.com/doc/refman/8.0/en/union.html) that belongs to an uncacheable subquery (see `UNCACHEABLE SUBQUERY`) |
+
+- table：表示查询结果涉及的表
+
+- **type**：查询连接类型，这个字段是判断查询是否高效的重要依据，常见类型有：
+
+  - system：表内只有一条数据，是特殊的const
+  - const：最多返回一条数据，针对主键或者唯一索引的查询。const只需查询一次，所以查询速度非常快。
+  - eq-ref：常用于多表关联查询，表示被关联表和每一行都与关联表匹配，查询效率高，常用与Primary key和Unique key的关联查询。
+  - ref：常用于多表查询（单表也行），用于**非主键或者唯一索引**的最左前缀匹配规则查询
+  - range：表示**使用索引范围查询**，通过索引字段获取指定范围内的部分记录，range常用于 [`=`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_equal), [`<>`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_not-equal), [`>`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_greater-than), [`>=`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_greater-than-or-equal), [`<`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_less-than), [`<=`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_less-than-or-equal), [`IS NULL`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_is-null), [`<=>`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_equal-to), [`BETWEEN`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_between), [`LIKE`](https://dev.mysql.com/doc/refman/8.0/en/string-comparison-functions.html#operator_like), or [`IN()`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_in)操作符中。
+  - index：表示**全表索引扫描**，与all类似（all是扫描全表，index扫描所有的索引树）。
+    - 如果索引在所查询的列中，并且可用于满足表中所需的所有数据，则仅扫描索引树。在这种情况下，`Extra`列显示为 `Using index`。
+    - 如果使用对索引的读取执行全表扫描，以按索引顺序查找数据行。 `Uses index`没有出现在 `Extra`列中。
+  - all：全表扫描，效率低下，性能最差，没有用到索引（possible_keys与key都是null）
+
+  type性能比较：
+
+  > all < index < range < ref <eq_ref < const < system
+
+- possible_keys：表示MySQL在查询时**可能使用到的索引**。
+
+- key：MySQL查询时**真正使用到的索引**。
+
+- ref：与索引相匹配的字段。
+
+- rows：**预估**会被扫描的数据数量，越少越好。
+
+- extra：额外信息展示
+
+  - Using filesort：当 Extra 中有 `Using filesort` 时, 表示 MySQL 需额外的排序操作, 不能通过索引顺序达到排序效果. 一般有 `Using filesort`, 都建议优化去掉, 因为这样的查询 CPU 资源消耗大。
+  - Using index：表示查询包括索引扫描（在索引中就能找到所查询的数据）。
+  - Using temporary：查询使用了临时表，一般用于排序、分组和多表join。
+  - Using where：使用了where条件查询。
