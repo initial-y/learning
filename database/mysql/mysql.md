@@ -343,13 +343,24 @@ myisam表支持空间索引，可以用作地理数据存储。
    唯一索引的选择性是1，是性能最好的索引。
 
 3. 多列索引的创建
+
 4. 选择合适的索引顺序
+
 5. 聚簇索引
+
 6. 覆盖索引
+
 7. 使用索引扫描来做排序
+
 8. 压缩索引
+
 9. 冗余和重复索引
+
 10. 索引和锁
+
+#### 最左前缀索引原则
+
+// todo  ： what + why+how +example
 
 ### explain
 
@@ -425,3 +436,11 @@ explain可以作用于select、delete、insert、replace和update语句。
   - Using index：表示查询包括索引扫描（在索引中就能找到所查询的数据）。
   - Using temporary：查询使用了临时表，一般用于排序、分组和多表join。
   - Using where：使用了where条件查询。
+
+
+
+## 参考
+
+- 《高性能MySQL》
+- [ mysql的最左前缀匹配原则]([https://glemontree.github.io/2017/12/10/[DB\]%20mysql%E7%9A%84%E6%9C%80%E5%B7%A6%E5%89%8D%E7%BC%80%E5%8C%B9%E9%85%8D%E5%8E%9F%E5%88%99/](https://glemontree.github.io/2017/12/10/[DB] mysql的最左前缀匹配原则/))
+- [索引优化三大原则](https://my.oschina.net/u/923324/blog/1634787)
