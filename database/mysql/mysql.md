@@ -264,7 +264,7 @@ MySQL提供两种相似的时间类型：datetime和timestamp
 
 - 缺点
 
-- - 对于查询需要对多个表进行关联
+  - 对于查询需要对多个表进行关联
   - 更难进行索引优化
 
 ##### 反范式
@@ -280,7 +280,6 @@ MySQL提供两种相似的时间类型：datetime和timestamp
   - 存在数据冗余，相对较难维护
   - 修改数据相对成本较大
 
-- 
 
 ## 索引
 
@@ -330,15 +329,21 @@ myisam表支持空间索引，可以用作地理数据存储。
 
 > eg. 
 >
-> ```mysq
+> ```mysql
 > select record_id from record where record_id + 1 > 5 // 不走索引
 > ```
 
 #### 前缀索引和索引选择性
 
-索引选择性
+##### 索引选择性
 
 是指不重复的索引值（也称基数，cardnality）和数据表的总数（#T）的比值，范围从1/#T到1之间。
+
+```mysql
+select count(distinct user_id) / count(*) as selectivity from table_user;
+```
+
+
 
 索引的选择性越高，查询效率越高。选择性越高的索引可以让MySQL在查找时过滤掉更多的行。
 
@@ -399,9 +404,9 @@ SELECT * FROM tbl_name WHERE col2=val2;
 SELECT * FROM tbl_name WHERE col2=val2 AND col3=val3;
 ```
 
-
-
 #### 选择合适的索引顺序
+
+选择索引的顺序有一个经验法则：当不需要考虑排序和分组时，**将选择性高的的列放在索引的最前列**。
 
 #### 聚簇索引
 
