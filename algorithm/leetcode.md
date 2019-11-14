@@ -187,3 +187,102 @@ public class LargestNumberAtLeastTwiceOfOthers {
 }
 ```
 
+#### [66. Plus One ]( https://leetcode.com/problems/plus-one/ )
+
+```java
+public class PlusOne {
+
+    /**
+     * 错误案例, 未通过版本
+     * @param digits
+     * @return
+     * @description 题目未限制数组长度, int, long来求和都可能出现越界问题
+     */
+    public static int[] plusOneFailed(int[] digits) {
+
+        // 简单测试用例能通过, 数组过长会越界
+        int num = 0;
+        for (int i = digits.length - 1; i >= 0; i--) {
+            num += digits[i] * Math.pow(10L, digits.length - 1 - i);
+        }
+
+        int plusNum = num + 1;
+        int[] arr = new int[digits.length];
+        if (plusNum / Math.pow(10L, digits.length - 1) >= 10) {
+            arr = new int[digits.length + 1];
+        }
+
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = (int) (plusNum / Math.pow(10L, arr.length - 1 - i));
+            plusNum %= Math.pow(10L, arr.length - 1 - i);
+        }
+        return arr;
+    }
+
+    /**
+     * 通过版本, 存在优化空间
+     * @param digits
+     * @return
+     * @description 方法由求和转为操作数组本身, do..while 实现
+     */
+    public static int[] plusOnePassed(int[] digits) {
+
+        int index = digits.length - 1;
+        int last;
+
+        // 从数组最后一个元素开始操作, 自增1后判断是否等于10
+        do {
+            last = digits[index] + 1;
+            // 可以写成digits[index]=0
+            digits[index] = last % 10;
+            // index先判断再减1,不然会有越界问题
+        } while (index-- > 0 && last == 10);
+
+        // 如果上述循环结束后digits[0] = 0, 表明digits形如[9,...], 此时数组扩容1
+        if (digits[0] == 0) {
+            int[] newDigits = new int[digits.length + 1];
+            newDigits[0] = 1;
+            // 循环可以去掉,digits形如[9,..], 自增后除第一位为1外其他位必然是0
+            for (int i = 1; i < newDigits.length; i++) {
+                newDigits[i] = digits[i - 1];
+            }
+            return newDigits;
+        }
+
+        return digits;
+    }
+
+    /**
+     * LeetCode讨论区版本之一, for循环实现
+     * @param digits
+     * @return
+     */
+    public static int[] plusOneForLoop(int[] digits) {
+        // 每一位都自增1, 如果自增后<=9, 及时返回
+        for (int i = 0; i < digits.length; i++) {
+            digits[i]++;
+            // 也可以先判断digits[i] < 9 ,在判断内自增1
+            if (digits[i] <= 9) {
+                return digits;
+            } else {
+                digits[i] = 0;
+            }
+        }
+
+        // 此处不用判断digits[0]==0, 没有在for循环return表明数组需要扩容
+        int[] newDigits = new int[digits.length + 1];
+        newDigits[0] = 1;
+        return newDigits;
+    }
+
+    public static void main(String[] args) {
+        int[] digits = new int[]{9, 9};
+        System.out.println(JSON.toJSONString(plusOneForLoop(digits)));
+
+    }
+
+}
+```
+
+
+
