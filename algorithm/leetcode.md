@@ -220,7 +220,7 @@ public class PlusOne {
     }
 
     /**
-     * 通过版本, 存在优化空间
+     * 通过版本, 存在优化空间, do-while实现
      * @param digits
      * @return
      * @description 方法由求和转为操作数组本身, do..while 实现
@@ -242,7 +242,7 @@ public class PlusOne {
         if (digits[0] == 0) {
             int[] newDigits = new int[digits.length + 1];
             newDigits[0] = 1;
-            // 循环可以去掉,digits形如[9,..], 自增后除第一位为1外其他位必然是0
+            // todo 循环可以去掉,digits形如[9,..], 自增后除第一位为1外其他位必然是0
             for (int i = 1; i < newDigits.length; i++) {
                 newDigits[i] = digits[i - 1];
             }
@@ -259,7 +259,7 @@ public class PlusOne {
      */
     public static int[] plusOneForLoop(int[] digits) {
         // 每一位都自增1, 如果自增后<=9, 及时返回
-        for (int i = 0; i < digits.length; i++) {
+        for (int i = digits.length - 1; i >= 0; i--) {
             digits[i]++;
             // 也可以先判断digits[i] < 9 ,在判断内自增1
             if (digits[i] <= 9) {
@@ -273,6 +273,64 @@ public class PlusOne {
         int[] newDigits = new int[digits.length + 1];
         newDigits[0] = 1;
         return newDigits;
+    }
+
+    /**
+     * LeetCode讨论区实现之二: for + break 实现, 与plusOneForLoop版本相似, 一个用break, 一个用return
+     * @param digits
+     * @return
+     */
+    public static int[] plusOneForBreak(int[] digits) {
+
+        for (int i = digits.length - 1; i >= 0; i--) {
+            if (digits[i] < 9) {
+                digits[i]++;
+                break;
+            } else {
+                digits[i] = 0;
+            }
+        }
+
+        if (digits[0] == 0) {
+            int[] newDigits = new int[digits.length + 1];
+            newDigits[0] = 1;
+            return newDigits;
+        }
+
+        return digits;
+    }
+
+    /**
+     * LeetCode讨论区版本之三, while实现, 更易理解
+     * @param digits
+     * @return
+     */
+    public static int[] plusOneWhile(int[] digits) {
+        // carry可以理解成是进位
+        int carry = 1;
+
+        // 从最后一个数字开始
+        int index = digits.length - 1;
+        // 需要进位&&index不越界
+        while (carry > 0 && index >= 0) {
+            digits[index]++;
+            if (digits[index] <= 9) {
+                // <=9 不需要进位
+                carry = 0;
+            } else {
+                // >9 需要进位, 取余
+                digits[index] = digits[index] % 10;
+            }
+            index--;
+        }
+
+        // 循环完了都还需要进位,表明是[9,....]这种情况
+        if (carry > 0) {
+            digits = new int[digits.length + 1];
+            digits[0] = 1;
+        }
+
+        return digits;
     }
 
     public static void main(String[] args) {
