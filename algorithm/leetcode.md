@@ -1,8 +1,8 @@
 ## Data Structure
 
-### Array and String
+### Array
 
-#### [724. Find Pivot Index]( https://leetcode.com/problems/find-pivot-index/ )
+#### [724. Find Pivot Index](https://leetcode.com/problems/find-pivot-index/ )
 
 ```java
 public class FindPivotIndex {
@@ -70,7 +70,7 @@ public class FindPivotIndex {
 }
 ```
 
-#### [747. Largest Number At Least Twice of Others ]( https://leetcode.com/problems/largest-number-at-least-twice-of-others/ )
+#### [747. Largest Number At Least Twice of Others ](https://leetcode.com/problems/largest-number-at-least-twice-of-others/ )
 
 ```java
 public class LargestNumberAtLeastTwiceOfOthers {
@@ -187,7 +187,7 @@ public class LargestNumberAtLeastTwiceOfOthers {
 }
 ```
 
-#### [66. Plus One ]( https://leetcode.com/problems/plus-one/ )
+#### [66. Plus One ](https://leetcode.com/problems/plus-one/ )
 
 ```java
 public class PlusOne {
@@ -342,5 +342,209 @@ public class PlusOne {
 }
 ```
 
+### 2D Array
 
+#### [498. Diagonal Traverse](https://leetcode.com/problems/diagonal-traverse/ )
+
+```java
+public class DiagonalTraverse {
+
+    /**
+     * 参考评论区大神版本之一, 个人认为最容易理解的版本
+     *
+     * @param matrix
+     * @return
+     * @description 1. 箭头走向: row + col为偶数时row--,col++; row+col为奇数时,col--,row++
+     * 2. 处理边界
+     */
+    public static int[] findDiagonalOrder(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return new int[0];
+        }
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[] arr = new int[m * n];
+
+        int row = 0;
+        int col = 0;
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = matrix[row][col];
+            // 左下->右上: row--, col+=
+            if ((row + col) % 2 == 0) {
+                if (row - 1 >= 0 && col + 1 < n) {
+                    // 正常情况, 非顶点
+                    row--;
+                    col++;
+                } else if (row == 0 && col + 1 < n) {
+                    // 移动到上边界(非顶点), 改变方向
+                    col++;
+                } else if (col == n - 1 && row + 1 < m) {
+                    // 移动到右边界(非顶点), 改变方向
+                    row++;
+                }
+            } else {
+                // row + col 为奇数, 右上->左下
+                if (col - 1 >= 0 && row + 1 < m) {
+                    // 正常情况, 非顶点
+                    col--;
+                    row++;
+                } else if (col == 0 && row + 1 < m) {
+                    // 左边界(非顶点), 改变方向
+                    row++;
+                } else if (row == m - 1 && col + 1 < n) {
+                    // 下边界(非顶点), 改变方向
+                    col++;
+                }
+            }
+        }
+
+        return arr;
+    }
+
+    /**
+     * 评论区由上面版本衍生出来的版本, 因if else的顺序而导致IndexOutOfBound
+     *
+     * @param matrix
+     * @return
+     */
+    public static int[] findDiagonalOrderIndexOutOfBound(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return new int[0];
+        }
+
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[] arr = new int[m * n];
+
+        int row = 0;
+        int col = 0;
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = matrix[row][col];
+            // 上移
+            if ((row + col) % 2 == 0) {
+                // 存在着row==0&&col==n-1的情况(右上角顶点), 此时应该row++, 此处是col++
+                if (row == 0) {
+                    col++;
+                } else if (col == n - 1) { // 正确的顺序是先判断col==n-1, 再判断row==0
+                    row++;
+                } else {
+                    row--;
+                    col++;
+                }
+            } else { // 下移
+                // 同理,存在着col==0&&row==m-1的情况(左下角顶点), 此时应该col++
+                if (col == 0) {
+                    row++;
+                } else if (row == m - 1) {
+                    col++;
+                } else {
+                    col--;
+                    row++;
+                }
+            }
+        }
+
+        return arr;
+    }
+
+    /**
+     * 评论区版本之二, 简洁但较难理解
+     *
+     * @param matrix
+     * @return
+     */
+    public static int[] findDiagonalOrderConcise(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return new int[0];
+        }
+
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[] arr = new int[m * n];
+
+        int row = 0;
+        int col = 0;
+        int d = 1;
+
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = matrix[row][col];
+            row -= d;
+            col += d;
+
+            // 顺序很重要
+            if (row >= m) {
+                row = m - 1;
+                col += 2;
+                d = -d;
+            }
+            if (col >= n) {
+                col = n - 1;
+                row += 2;
+                d = -d;
+            }
+            if (row < 0) {
+                row = 0;
+                d = -d;
+            }
+            if (col < 0) {
+                col = 0;
+                d = -d;
+            }
+        }
+        return arr;
+    }
+
+    public static void main(String[] args) {
+        int[][] matrix = new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        System.out.println(JSON.toJSONString(findDiagonalOrderConcise(matrix)));
+    }
+}
+```
+
+#### [54. Spiral Matrix ](https://leetcode.com/problems/spiral-matrix/ )
+
+```java
+public class SpiralMatrix {
+
+    public static List<Integer> spiralOrder(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return new ArrayList<>();
+        }
+
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int length = m * n;
+        ArrayList list = new ArrayList();
+
+        // 循环起点依次是(0,0), (1,1), (2,2)...
+        int row = 0;
+        int col = 0;
+
+        int rowDeduct = 0, colDeduct = 0;
+        for (int i = 0; i < length; i++) {
+            list.add(matrix[row][col]);
+		   
+            // todo 循环
+            if (col + 1 < n) {
+                col++;
+            } else if (col == n - 1 && row + 1 < m) {
+                row++;
+                rowDeduct++;
+            } else if (col == n - 1 && row == m - 1) {
+                col--;
+                colDeduct++;
+            } else if (col == 0 && row - 1 > 0) {
+                row--;
+            }
+        }
+
+        return list;
+    }
+
+    public static void main(String[] args) {
+        int[][] matrix = new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        System.out.println(JSON.toJSONString(spiralOrder(matrix)));
+    }
+}
+```
 
