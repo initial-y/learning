@@ -506,7 +506,12 @@ public class DiagonalTraverse {
 ```java
 public class SpiralMatrix {
 
-    public static List<Integer> spiralOrder(int[][] matrix) {
+    /**
+     * 错误的思路
+     * @param matrix
+     * @return
+     */
+    public static List<Integer> spiralOrderFailed(int[][] matrix) {
         if (matrix == null || matrix.length == 0) {
             return new ArrayList<>();
         }
@@ -523,7 +528,7 @@ public class SpiralMatrix {
         int rowDeduct = 0, colDeduct = 0;
         for (int i = 0; i < length; i++) {
             list.add(matrix[row][col]);
-		   
+
             // todo 循环
             if (col + 1 < n) {
                 col++;
@@ -541,9 +546,93 @@ public class SpiralMatrix {
         return list;
     }
 
+    /**
+     * LeetCode讨论区版本之一，思路相对清晰
+     * @description 注意for循环里的list.size() < m * n不能省略
+     *              在m != n的情况下，当最后一行/一列循环完成之后很可能会重复读到数据（执行另一个朝向的循环）
+     *              list.size() < m * n能保证在执行最后一个正确的朝向后，能通过size的判断及时退出循环
+     * @param matrix
+     * @return
+     */
+    public static List<Integer> spiralOrder(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return new ArrayList<>();
+        }
+
+        int m = matrix.length;
+        int n = matrix[0].length;
+
+        List<Integer> list = new ArrayList<>(m * n);
+
+        int top = 0, bottom = m - 1;
+        int left = 0, right = n - 1;
+        while (list.size() < m * n) {
+            // 从左往右, 行不变，列递增
+            for (int j = left; j <= right && list.size() < m * n; j++) {
+                list.add(matrix[top][j]);
+            }
+            // 执行完毕，top + 1
+            top++;
+
+            // 从上往下，列不变，行递增
+            for (int i = top; i <= bottom && list.size() < m * n; i++) {
+                list.add(matrix[i][right]);
+            }
+            // 执行完毕，right - 1
+            right--;
+
+            // 从右往左，行不变，列递减
+            for (int j = right; j >= left && list.size() < m * n; j--) {
+                list.add(matrix[bottom][j]);
+            }
+            // 执行完毕，bottom - 1
+            bottom--;
+
+            // 从下往上，列不变，行递减
+            for (int i = bottom; i >= top && list.size() < m * n; i--) {
+                list.add(matrix[i][left]);
+            }
+            // 执行完毕，left + 1
+            left++;
+
+        }
+        return list;
+    }
+
     public static void main(String[] args) {
         int[][] matrix = new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
         System.out.println(JSON.toJSONString(spiralOrder(matrix)));
+    }
+}
+```
+
+#### [118. Pascal's Triangle](https://leetcode.com/problems/pascals-triangle/)
+
+```java
+class PascalTriangle {
+    public List<List<Integer>> generate(int numRows) {
+        
+        List<List<Integer>> triangleList = new ArrayList<>();
+        for (int i = 0; i < numRows; i++) {
+            int subSize = i + 1;
+            List<Integer> subList = new ArrayList<>();
+
+            if (i == 0) {
+                subList.add(1);
+            } else {
+                List<Integer> preList = triangleList.get(i - 1);
+                for (int j = 0; j < subSize; j++) {
+                    if (j == 0 || j == subSize -1) {
+                        subList.add(1);
+                    } else {
+                        subList.add(preList.get(j) + preList.get(j - 1));
+                    }
+                }
+            }
+            triangleList.add(subList);
+        }
+
+        return triangleList;
     }
 }
 ```
