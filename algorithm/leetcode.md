@@ -549,7 +549,7 @@ public class SpiralMatrix {
     /**
      * LeetCode讨论区版本之一，思路相对清晰
      * @description 注意for循环里的list.size() < m * n不能省略
-     *              在m != n的情况下，当最后一行/一列循环完成之后很可能会重复读到数据（执行另一个朝向的循环）
+     *              在m != n的情况下，进入最后一次循环,数据遍历完之后并没有及时推出循环的操作(几个for循环会依次执行完毕), 这样会导致最终的结果 > m * n 
      *              list.size() < m * n能保证在执行最后一个正确的朝向后，能通过size的判断及时退出循环
      * @param matrix
      * @return
@@ -566,6 +566,7 @@ public class SpiralMatrix {
 
         int top = 0, bottom = m - 1;
         int left = 0, right = n - 1;
+        // while(left <= right && top <= bottom)
         while (list.size() < m * n) {
             // 从左往右, 行不变，列递增
             for (int j = left; j <= right && list.size() < m * n; j++) {
