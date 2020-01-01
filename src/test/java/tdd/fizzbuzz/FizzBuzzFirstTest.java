@@ -56,6 +56,15 @@ public class FizzBuzzFirstTest {
         checkNumOutput(56, "buzz");
     }
 
+    @Test
+    public void test_all_cases() {
+        checkNumOutput(1, "1");
+        checkNumOutput(2, "2");
+        checkNumOutput(3, "fizz");
+        checkNumOutput(5, "buzz");
+        checkNumOutput(15, "fizzbuzz");
+    }
+
     private void checkNumOutput(int i, String s) {
         assertThat(new FizzBuzzFirst(i).toString(), is(s));
     }
