@@ -1,11 +1,12 @@
 package tdd.args;
 
-import org.hamcrest.core.Is;
+import org.junit.Assert;
 import org.junit.Test;
+import tdd.args.first.ArgParam;
 import tdd.args.first.ArgParser;
+import tdd.args.first.ArgSchema;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import java.util.ArrayList;
 
 /**
  * todo
@@ -22,13 +23,12 @@ public class ArgFirstTest {
 
     @Test
     public void should_return_value_if_input_is_normal() {
-        assertThat(new ArgParser().parseText("-p 8080 -d /usr/logs").get("p").getValue(), Is.<Object>is(8080));
-//        assertThat(new ArgParser().parseText("-p 8080 -d /usr/logs").get("d").getValue(), Is.<Object>is("/usr/logs"));
+        Assert.assertEquals(new ArgParser(new ArgSchema(2, new ArrayList<ArgParam>())).parseText("-p 8080 -d /usr/logs").get("p"), 8080);
     }
 
     @Test
     public void should_return_default_if_input_without_value() {
-
+        Assert.assertEquals(new ArgParser(new ArgSchema(2, new ArrayList<ArgParam>())).parseText("-l").get("p"), true);
     }
 
     @Test
