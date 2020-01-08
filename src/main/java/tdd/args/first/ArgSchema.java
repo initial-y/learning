@@ -1,16 +1,18 @@
 package tdd.args.first;
 
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * @className: ArgSchema
+ * @author: yangxin
+ * @date: 2020/1/8
+ */
 public class ArgSchema {
 
-    private int argNum;
+    private String key;
 
-    private List<ArgParam> argParams;
+    private String type;
 
-    public ArgSchema(int argNum, ArrayList<ArgParam> argParams) {
-        this.argNum = argNum;
-        this.argParams = argParams;
+    public ArgSchema(String key, String type) {
+        this.key = key;
+        this.type = type;
     }
 }
