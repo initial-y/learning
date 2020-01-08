@@ -15,4 +15,19 @@ public class ArgSchema {
         this.key = key;
         this.type = type;
     }
+
+    public Object getValue(String str) {
+        Object value;
+        switch (type) {
+            case "bool" :
+                value = (str != null && !"".equals(str)) && str.equalsIgnoreCase("true");
+                break;
+            case "int" :
+                value = str != null && !"".equals(str) ? Integer.parseInt(str) : 0;
+                break;
+            default:
+                value = str;
+        }
+        return value;
+    }
 }

@@ -45,8 +45,8 @@ public class ArgFirstTest {
 
     @Test
     public void test() {
-        String str = "-p 8080 -d /usr/logs";
-        String[] args = str.split("(^\\s+)|(\\s-)");
+        String str = "-l -p 8080 -d /usr/logs";
+        String[] args = str.split("(^|\\s+)-");
 
         System.out.println(args.length);
         System.out.println(new Gson().toJson(args));

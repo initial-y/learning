@@ -20,7 +20,7 @@ public class ArgParser {
 //                .map(command -> {
 //                    String[] commandArr = command.split("\\s+");
 //                    return new
-//                })
+//                }).collect(Collectors.toList());
 
     }
 
