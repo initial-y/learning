@@ -1,27 +1,27 @@
 package tdd.args.first;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  * @className: ArgParser
- * @author: yangxin
  * @date: 2020/1/8
  */
 public class ArgParser {
 
-    private List<ArgSchema> schemas;
+    private final List<ArgCommand> commands;
+    private final List<ArgSchema> schemas;
 
     public ArgParser(String schemaStr, String commandStr) {
         this.schemas = getSchemas(schemaStr);
+        this.commands = getCommands(commandStr);
+    }
 
-//        Stream.of(commandStr.split("(^\\s+)|-")).filter(command -> !"".equals(command))
-//                .map(command -> {
-//                    String[] commandArr = command.split("\\s+");
-//                    return new
-//                }).collect(Collectors.toList());
-
+    private List<ArgCommand> getCommands(String commandStr) {
+        return Stream.of(commandStr.split("^-|\\s+-(?!\\d)"))
+                .filter(command -> !"".equals(command)).map(ArgCommand::new).collect(Collectors.toList());
     }
 
     private List<ArgSchema> getSchemas(String schemaStr) {
@@ -32,8 +32,11 @@ public class ArgParser {
     }
 
     public Object getValue(String p) {
-
-        return 8080;
-
+        ArgSchema argSchema = schemas.stream().filter(schema -> p.equals(schema.getKey())).findFirst().orElse(null);
+        ArgCommand argCommand = commands.stream().filter(command -> p.equals(command.getKey())).findFirst().orElse(null);
+        if (Objects.nonNull(argSchema) && Objects.nonNull(argCommand)) {
+            return argSchema.getValue(argCommand.getValue());
+        }
+        return null;
     }
 }
