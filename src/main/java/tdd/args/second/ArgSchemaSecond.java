@@ -1,25 +1,39 @@
 package tdd.args.second;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ArgSchemaSecond {
 
-    private String type;
+    private Map<String, String> schemaMap = new HashMap<>(4);
 
-    public ArgSchemaSecond(String type) {
-        this.type = type;
+    public ArgSchemaSecond(String schemaStr) {
+        String[] schemaArr = schemaStr.split(";");
+        for (String schemas : schemaArr) {
+            String[] schema = schemas.split(":");
+            String key = schema[0];
+            String value = schema.length > 1 ? schema[1] : null;
+            schemaMap.put(key, value);
+        }
     }
 
-    public Object getValue(String str) {
+    public Object getValue(String key, String valueStr) {
         Object value;
+        String type = schemaMap.get(key);
+        if (type == null) {
+            return null;
+        }
         switch (type) {
             case "int":
-                value = Integer.parseInt(str);
+                value = valueStr != null ? Integer.parseInt(valueStr) : 0;
                 break;
             case "bool":
-                value = "true".equals(str);
+                value = valueStr == null || "true".equals(valueStr);
                 break;
             default:
-                value = str;
+                value = valueStr;
         }
         return value;
     }
+
 }

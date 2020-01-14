@@ -14,12 +14,17 @@ public class ArgCommandSecond {
         ListIterator<String> commandIterator = Arrays.asList(commandArr).listIterator();
         while (commandIterator.hasNext()) {
             String iterator = commandIterator.next();
-            if (!iterator.startsWith("-")) {
-                // todo 从尾到前
-                if (commandIterator.hasPrevious()) {
-                    String key = commandIterator.previous();
-                    commandMap.put(key, iterator);
+            if (iterator.startsWith("-") && iterator.substring(1).matches("\\D")) {
+                String value = null;
+                if (commandIterator.hasNext()) {
+                    String next = commandIterator.next();
+                    if (next.startsWith("-") && next.substring(1).matches("\\D")) {
+                        commandIterator.previous();
+                    } else {
+                        value = next;
+                    }
                 }
+                commandMap.put(iterator.substring(1), value);
             }
 
         }
