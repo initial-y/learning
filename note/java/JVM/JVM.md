@@ -4,7 +4,7 @@
 
 Java虚拟机在执行Java程序的过程中会把它所管理的内存划分为如下几个不同的数据区域。这些区域都有各自的用途及创建和销毁的时间，有的区域随着虚拟机进程的启动而存在（比如堆），有些区域则依赖用户线程的启动和结束来进行建立和销毁操作（比如Java虚拟机栈，本地方法栈）。
 
-![java内存区域](./imgs/JVM内存区域.png)
+![java内存区域](imgs/JVM内存区域.png)
 
 ### 程序计数器（PC寄存器）
 
@@ -176,7 +176,7 @@ System.gc();
 
 可达性分析算法（Reachability Analysis）的基本思路是通过一系列被称为`GC Roots`的对象作为起点，从这些节点开始向下搜索，搜索所走过的路径被称为**引用链**（Reference Chain），当一个对象到GC Roots没有任何引用链相连时，则证明这个对象是不可用的。
 
-![GcRoots引用链](./imgs/GcRoots引用链.jpg)
+![GcRoots引用链](imgs/GcRoots引用链.jpg)
 
 从上图可以看出，右侧object5，6，7虽然相互有关联，但是它们的关联并不是以GC Roots为起点，所以在进行垃圾回收时它们会被判定为可回收的对象。
 
@@ -234,7 +234,7 @@ finalize()方法是对象逃脱被回收命运的最后一次机会，随后GC�
 
 标记清除算法执行过程如下：
 
-![MarkSweep](./imgs/MarkSweep.jpg)
+![MarkSweep](imgs/MarkSweep.jpg)
 
 原理图二:
 
@@ -254,7 +254,7 @@ finalize()方法是对象逃脱被回收命运的最后一次机会，随后GC�
 
 复制算法执行过程如下（使用50%内存空间）：
 
-![Copying](./imgs/Copying.jpg)
+![Copying](imgs/Copying.jpg)
 
 复制算法示意图二：
 
@@ -270,7 +270,7 @@ finalize()方法是对象逃脱被回收命运的最后一次机会，随后GC�
 
 标记整理算法执行过程如下：
 
-![MarkCompact](./imgs/MarkCompact.jpg)
+![MarkCompact](imgs/MarkCompact.jpg)
 
 标记整理原理图二：
 
@@ -304,7 +304,7 @@ Java虚拟机规范并没有对垃圾收集器如何实现做任何规定，所�
 
 下图是基于JDK1.7 Update14后的Hotspot虚拟机包含的所有收集器：
 
-![GarbageCollector](./imgs/GarbageCollectors.jpg)
+![GarbageCollector](imgs/GarbageCollectors.jpg)
 
 垃圾收集器关联图二：
 
@@ -320,7 +320,7 @@ STW由虚拟机由虚拟机在后台自动发起和自动完成，在用户不�
 
 下图是Serial（新生代） + Serial Old（老年代）收集器的运行过程:
 
-![SerialOrSerialOld](./imgs/SerialAndSerialOld.jpg)
+![SerialOrSerialOld](imgs/SerialAndSerialOld.jpg)
 
 #### ParNew收集器
 
@@ -330,7 +330,7 @@ ParNew收集器是许多运行在Server模式下的虚拟机首选的新生代�
 
 parNew（新生代）+ Serial Old（老年代）收集器运行图如下：
 
-![ParNewAndSerialOld](./imgs/ParNewAndSerialOld.jpg)
+![ParNewAndSerialOld](imgs/ParNewAndSerialOld.jpg)
 
 #### Parallel Scavenge收集器
 
@@ -353,7 +353,7 @@ PS有一个参数-XX:+UseAdaptiveSizePolicy也很重要。这个是一个开关�
 
 PS（新生代） + P Old（老年代）收集器运行流程如下：
 
-![PsAndPold](./imgs/ParallelAndScavengeAndParallelOld.jpg)
+![PsAndPold](imgs/ParallelAndScavengeAndParallelOld.jpg)
 
 #### CMS收集器
 
@@ -396,7 +396,7 @@ CMS虽然有**并发收集**和**低停顿**的特点，但是也有3个比较�
 
 下图是CMS的运行过程:
 
-![CMS](./imgs/CMS.jpg)
+![CMS](imgs/CMS.jpg)
 
 #### Serial Old收集器
 
@@ -448,7 +448,7 @@ G1收集的运行大概分为以下几步：
 
 G1收集器运行流程如下图：
 
-![GFirst](./imgs/GFirst.jpg)
+![GFirst](imgs/GFirst.jpg)
 
 
 
@@ -456,7 +456,7 @@ G1收集器运行流程如下图：
 
 ### 垃圾收集器常用参数
 
-![GCParameters](./imgs/GCParameters.jpg)
+![GCParameters](imgs/GCParameters.jpg)
 
 ### GC日志
 
