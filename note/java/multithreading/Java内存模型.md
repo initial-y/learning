@@ -170,7 +170,30 @@ JMM中的happens-before原则中的**volatile变量规则**：对一个`volatile
 
 #### 为什么volatile无法保证原子性
 
-// todo volatile ++ ？
+volatile仅仅只能保证对单个变量的读/写操作的原子性。
+
+比如，对于volatile自增，实际分为三步：
+1. 读取内存中的volatile变量到本地
+1. 增加变量的值
+1. 将变量的值写会到内存，让其他线程可见
+```text
+mov    0xc(%r10),%r8d ; Load
+inc    %r8d           ; Increment
+mov    %r8d,0xc(%r10) ; Store
+lock addl $0x0,(%rsp) ; StoreLoad Barrier
+```
+
+volatile写操作的最后一步是内存屏障，内存屏障的作用是使某些操作保持一定的顺序（确定哪些先执行哪些后执行，不能进行指令重排）。
+> - LoadLoad屏障：对于这样的语句Load1; LoadLoad; Load2，在Load2及后续读取操作要读取的数据被访问前，保证Load1要读取的数据被读取完毕。
+> - StoreStore屏障：对于这样的语句Store1; StoreStore; Store2，在Store2及后续写入操作执行前，保证Store1的写入操作对其它处理器可见。
+> - LoadStore屏障：对于这样的语句Load1; LoadStore; Store2，在Store2及后续写入操作被刷出前，保证Load1要读取的数据被读取完毕。
+> - StoreLoad屏障：对于这样的语句Store1; StoreLoad; Load2，在Load2及后续所有读取操作执行前，保证Store1的写入对所有处理器可见。它的开销是四种屏障中最大的（冲刷写缓冲器，清空无效化队列）。在大多数处理器的实现中，这个屏障是个万能屏障，兼具其它三种内存屏障的功能
+
+内存屏障（memory barrier）和volatile什么关系？
+> 上面的虚拟机指令里面有提到，如果你的字段是volatile，Java内存模型将在写操作后插入一个写屏障指令，在读操作前插入一个读屏障指令。这意味着如果你对一个volatile字段进行写操作，你必须知道：1、一旦你完成写入，任何访问这个字段的线程将会得到最新的值。2、在你写入前，会保证所有之前发生的事已经发生，并且任何更新过的数据值也是可见的，因为内存屏障会把之前的写入值都刷新到缓存。
+
+最后，为什么volatile不能保证原子性？
+> 从Load到store到内存屏障，一共4步，其中最后一步jvm让这个最新的变量的值在所有线程可见，也就是最后一步让所有的CPU内核都获得了最新的值，但中间的几步（从Load到Store）是不安全的，中间如果其他的CPU修改了值将会丢失。
 
 #### volatile的应用
 
@@ -245,3 +268,4 @@ instance = new Singleton();
 - [面试官最爱的volatile关键字](https://juejin.im/post/5a2b53b7f265da432a7b821c)
 - [并发编程的锁机制：synchronized和lock](https://juejin.im/post/5a43ad786fb9a0450909cb5f) 
 - [JSR-133](https://download.oracle.com/otndocs/jcp/memory_model-1.0-pfd-spec-oth-JSpec/)
+- [为什么volatile不能保证原子性而Atomic可以？](https://www.cnblogs.com/mainz/p/3556430.html)
