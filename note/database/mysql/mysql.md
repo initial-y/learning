@@ -495,6 +495,127 @@ explain可以作用于select、delete、insert、replace和update语句。
   - Using temporary：查询使用了临时表，一般用于排序、分组和多表join。
   - Using where：使用了where条件查询。
 
+## MySQL实现排名
+
+#### =与=：
+
+- `=` 在set（包括update set）时是赋值的作用，其他都是比较运算符的作用。
+- `:=` 在set及**select**等情况下都是赋值的作用。因此，在select中用变量实现行号的时候，必须使用`:=`。
+
+### 普通排名
+
+```mysql
+-- 表
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `age` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+-- 数据
+id  name 	age
+1	alice	15
+2	bobby	11
+3	ciro	12
+4	daisy	12
+5	eden	13
+```
+
+在MySQL中，声明一个变量需要用`@`符号，我们可以先声明一个变量`@rank`，通过`@rank`变量实现行号：
+
+```mysql
+-- 在set中使用 := 或 = 并没有区别，都是赋值
+SET @rank := 0;
+SELECT *, @rank := @rank + 1 as ageRank FROM `user` ORDER BY age DESC;
+
+-- 一起执行的结果
+-- 注意，先执行set， 后续多次执行ageRank会顺序递增（@rank在select中更新）
+id  name 	age ageRank
+1	alice	15	1
+5	eden	13	2
+3	ciro	12	3
+4	daisy	12	4
+2	bobby	11	5
+```
+
+`@rank := @rank + 1` 此时的`:=`是赋值的作用，所以先执行`@rank + 1`，再进行赋值以达到实现行号的作用。
+
+如果用`@rank = @rank + 1`， 中间是`=`，`=`在select中是比较运算符，此时`@rank`不等于`@rank + 1`，所以ageRank会始终返回0。
+
+```mysql
+SET @rank := 0; 
+-- 在select中使用:=才是赋值
+SELECT *, @rank = @rank + 1 as ageRank FROM `user` ORDER BY age DESC
+
+-- 结果
+id  name 	age ageRank
+1	alice	15	0
+5	eden	13	0
+3	ciro	12	0
+4	daisy	12	0
+2	bobby	11	0
+```
+
+我们也可以用如下查询来替换避免`SET`赋值：
+
+```mysql
+-- 多次执行结果一样（ 在SELECT @rank := 0 中更新@rank为0）
+SELECT
+	usr.*,
+	@rank := @rank + 1 ageRank
+FROM
+	`user` usr,
+	( SELECT @rank := 0 ) r 
+ORDER BY
+	usr.age desc;
+```
+
+### 并列递增排名
+
+如果两个值相等的数据想要等得到同一排名，我们新增一个变量`@preRank`来表示上一个排名的值：
+
+```mysql
+SET @curRank := 0;
+SET @preRank := NULL; 
+SELECT
+	*,
+    CASE 
+        WHEN @preRank = age THEN @curRank  -- 注意此时用的是 = ，切位置不能调换
+        WHEN @preRank := age THEN @curRank := @curRank + 1 -- 如果这一步在前面那永远都不会执行第后续case， 此时转换为计算普通排名
+    END AS ageRank 
+FROM
+	`user` 
+ORDER BY
+	age DESC;
+	
+-- 结果
+id  name 	age ageRank
+1	alice	15	1
+5	eden	13	2
+3	ciro	12	3
+4	daisy	12	3
+2	bobby	11	4
+```
+
+同样SQL我们也可以写为：
+
+```mysql
+SELECT
+	usr.*,
+    CASE 
+        WHEN @preRank = age THEN @curRank  -- 注意此时的排序不能调换
+        WHEN @preRank := age THEN @curRank := @curRank + 1 -- 如果这一步在前面那永远都不会执行第后续case， 此时转换为计算普通排名
+    END AS ageRank 
+FROM
+	`user` usr,
+	(select @preRank := NULL, @curRank := 0) -- select中定义变量并通过:=赋值
+ORDER BY
+	age DESC;
+```
+
+
+
 
 
 ## 参考
@@ -504,3 +625,4 @@ explain可以作用于select、delete、insert、replace和update语句。
 - [索引优化三大原则](https://my.oschina.net/u/923324/blog/1634787)
 - [Innodb中的事务隔离级别和锁的关系](https://tech.meituan.com/2014/08/20/innodb-lock.html)
 - [Multiple-Column Indexes](https://dev.mysql.com/doc/refman/8.0/en/multiple-column-indexes.html)
+- [Assignment Operators](https://dev.mysql.com/doc/refman/8.0/en/assignment-operators.html)
