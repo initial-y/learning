@@ -70,7 +70,7 @@ JMM是围绕在并发过程中如何处理原子性、可见性、有序性这�
 > Java线程之间的通信由Java内存模型控制。从抽象的角度来说，JMM定义了线程和主内存之间的抽象关系。
 
 JMM抽象示意图：
-![JMM抽象示意图](https://raw.githubusercontent.com/chenxiao19920206/RedSpiderArticlePhotos/master/java-base/multi-thread/JMM%E6%8A%BD%E8%B1%A1%E7%A4%BA%E6%84%8F%E5%9B%BE.jpg)
+![JMM抽象示意图](imgs/JMM抽象示意图.jpg)
 由图可见：
 - 共享变量都是存在主内存中
 - 每个线程保存了主内存共享变量的副本
