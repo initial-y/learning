@@ -566,16 +566,33 @@ SELECT
 	@rank := @rank + 1 ageRank
 FROM
 	`user` usr,
-	( SELECT @rank := 0 ) r 
+	( SELECT @rank := 0 ) r -- select中定义变量并通过:=赋值
 ORDER BY
 	usr.age desc;
 ```
 
 ### 并列递增排名
 
-如果两个值相等的数据想要等得到同一排名，我们新增一个变量`@preRank`来表示上一个排名的值：
+如果两个值相等的数据想要等得到同一排名，并且后续排名递增增长，我们新增一个变量`@preRank`来表示上一个排名的值：
 
 ```mysql
+SET @curRank = 0;
+SET @preRank = NULL; -- 注意初始化的值， 如果初始化为0且排序后第一条是age=0的数据，ageRank结果会从0开始
+
+SELECT usr.*,
+	@curRank := IF(@preRank = age, @curRank, @curRank + 1) as ageRank, -- 判断上一条数据的值是否与当前相等， 相等排名不变 ，不等排排名+1
+	@preRank := age -- 初始化@preRank， 注意位置在if判断之后
+FROM `user` usr ORDER BY usr.age DESC;
+
+-- 结果 
+id  name 	age ageRank @preRank := age
+1	alice	15	1		15
+5	eden	13	2		13
+3	ciro	12	3		12
+4	daisy	12	3		12
+2	bobby	11	4		11
+
+-- 通过case when控制
 SET @curRank := 0;
 SET @preRank := NULL; 
 SELECT
@@ -601,6 +618,18 @@ id  name 	age ageRank
 同样SQL我们也可以写为：
 
 ```mysql
+
+SELECT usr.*,
+	@curRank := IF(@preRank = age, @curRank, @curRank + 1) as ageRank,
+	@preRank := age
+FROM `user` usr ,
+    (
+    	SELECT @curRank :=0, @preRank := NULL
+    ) r 
+ORDER BY usr.age DESC
+
+-- 及
+
 SELECT
 	usr.*,
     CASE 
@@ -614,7 +643,71 @@ ORDER BY
 	age DESC;
 ```
 
+上述两个查询相当于oracle或MySQL8.0的`dense_rank()`函数。
 
+### 并列非递增排名
+
+如果两个值相等的数据想要等得到同一排名，并且后续排名跳跃增长，我们在上面两个变量的基础上再引入一个变量`@incRank`：
+
+```mysql
+set @curRank := 0;
+set @preRank := null; -- 在if后初始化
+set @incrRank := 1; -- 在if后初始化，初始化为1， 每行递增1
+
+SELECT usr.*,
+	@curRank := IF(@preRank = age, @curRank, @incrRank) as ageRank,
+	@preRank := age,
+	@incrRank := @incrRank + 1
+FROM `user` usr 
+ORDER BY usr.age DESC;
+
+-- 结果
+id  name 	age ageRank @preRank := age  @incrRank := @incrRank + 1
+1	alice	15	1		15				2
+5	eden	13	2		13				3	
+3	ciro	12	3		12				4
+4	daisy	12	3		12				5
+2	bobby	11	5		11				6
+
+-- 另一种写法
+SELECT usr.*,
+	@curRank := IF(@preRank = age, @curRank, @incrRank),
+	@preRank := age,
+	@incrRank := @incrRank + 1
+FROM `user` usr, (
+	SELECT @curRank :=0, @preRank := NULL, @incRank := 1
+) r 
+ORDER BY usr.age DESC;
+```
+
+上述查询相当于oracle或MySQL8.0的`rank()`函数。
+
+### MySQL8.0 实现排名
+
+MySQL8.0可通过函数来实现上诉几种排名：
+
+- 普通排名/行号：`raw_number()`
+- 并列递增排名：`dense_rank()`
+- 并列非递增排名：`rank()`
+
+使用方式如下：
+
+```mysql
+SELECT *, 
+	 ROW_NUMBER() OVER w AS 'row_number',
+	 RANK()       OVER w AS 'rank',
+	 DENSE_RANK() OVER w AS 'dense_rank'
+FROM `user`
+WINDOW w AS (ORDER BY age);
+
+-- 结果
+id	name	age	row_number	rank	dense_rank
+2	bobby	11	1			1		1
+3	ciro	12	2			2		2
+4	daisy	12	3			2		2
+5	eden	13	4			4		3
+1	alice	15	5			5		4
+```
 
 
 
@@ -626,3 +719,4 @@ ORDER BY
 - [Innodb中的事务隔离级别和锁的关系](https://tech.meituan.com/2014/08/20/innodb-lock.html)
 - [Multiple-Column Indexes](https://dev.mysql.com/doc/refman/8.0/en/multiple-column-indexes.html)
 - [Assignment Operators](https://dev.mysql.com/doc/refman/8.0/en/assignment-operators.html)
+- [Window Function Descriptions](https://dev.mysql.com/doc/refman/8.0/en/window-function-descriptions.html#function_rank)
