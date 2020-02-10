@@ -211,15 +211,18 @@ atomicInteger.incrementAndGet(); //执行自增1
 >
 > 获得排它锁的线程既能读数据又能修改数据。
 >
-> JDK只不过的synchronized和JUC中的Lock实现类就是排他锁。
+> JDK中的`synchronized`、JUC中的Lock实现类以及`ReentrantLock`里的公平锁和非公平锁都是独享锁。
 >
-> ReentrytrantLock里的公平锁和非公平锁都是独享锁。
 
 #### 共享锁
 
-> 共享锁是指该锁可被多个线程持有。如果一个线程对某个数据加上共享锁后，其他线程只能对这个数据加共享锁，不能加排他锁。
+> 共享锁是指该锁可被多个线程持有。
+>
+> 如果一个线程对某个数据加上共享锁后，其他线程只能对这个数据加共享锁，不能加排他锁。
 >
 > 获得共享锁的线程只能读数据，不能修改数据。
+>
+> JUC中的`Semaphore`、`CountDownLatch`就是共享锁。
 
 ### 死锁
 
