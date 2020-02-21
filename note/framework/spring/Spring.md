@@ -330,11 +330,165 @@ Spring 通过 XML 配置模式装载 Bean，也是反射的一个典型例子。
 
 ## Spring AOP
 
+### AOP
 
+AOP（Aspect Orient Programming），面向切面编程。AOP是一种面向对象的补充，用于处理系统中分布于各个模块的横切关注点，比如事务管理、日志、缓存等等。
+
+AOP实现的关键在于AOP框架自动创建的AOP代理，AOP代理又分为静态代理和动态代理。静态代理的代表是AspectJ，动态代理的代表是Spring AOP。
+
+### Spring AOP
+
+Spring AOP中的动态代理有**JDK动态代理**和**CGLIB动态代理**两种方式。
+
+#### JDK动态代理
+
+JDK动态代理通过反射来接收被代理的类，并且**要求被代理的类必须实现一个接口**。
+
+JDK动态代理的核心是`InvocationHandler`接口和`Proxy`类。
+
+如果目标类没有实现接口，那么Spring AOP会选择使用CGLIB来动态代理目标类。
+
+##### 代理模式
+
+![代理模式](imgs/代理模式.png)
+
+在代理模式中，要求：
+
+- 目标对象和代理对象都共同实现的了同一个接口。
+- 目标对象中存在的方法在代理对象中也同样存在。
+
+代理模式分为两种：
+
+- 静态代理：代理类在编译器就确定好。 Java 编译完成后代理类是一个实际的 class 文件。
+- 动态代理：代理类是在运行时生成的。Java 编译完之后并没有实际的 class 文件，而是在运行时动态生成的类字节码，并加载到JVM中。
+
+Java如何实现动态代理：
+
+1. 定义一个接口及其实现类
+
+   ```java
+   /**
+    * 接口类
+    * @ClassName DynamicProxyService
+    * @Descripiton
+    * @Author initial_yang
+    * @Date 2020/2/21
+    */
+   public interface DynamicProxyService {
+       void testDynamic();
+   }
+   
+   /**
+    * 实现类
+    * @ClassName DynamicProxyServiceImpl
+    * @Descripiton
+    * @Author initial_yang
+    * @Date 2020/2/21
+    */
+   public class DynamicProxyServiceImpl implements DynamicProxyService {
+       @Override
+       public void testDynamic() {
+           System.out.println("JDK动态代理，目标类的方法实现，在这前后实现切面");
+       }
+   }
+   ```
+
+2. 通过实现`InvocationHandler`接口来自定义自己的`InvocationHandler`，指定运行时将生成的代理类需要完成的具体任务(添加切面)
+
+   ```java
+   /**
+    * @ClassName DynamicProxyInvocationHandler
+    * @Descripiton
+    * @Author initial_yang
+    * @Date 2020/2/21
+    */
+   public class DynamicProxyInvocationHandler implements InvocationHandler {
+   
+       /**
+        * 目标对象
+        */
+       private Object target;
+   
+       public DynamicProxyInvocationHandler(Object target) {
+           this.target = target;
+       }
+   
+       /**
+        * invoke方法
+        * @description 在invoke方法中加入切面逻辑
+        * @param proxy
+        * @param method
+        * @param args
+        * @return
+        * @throws Throwable
+        */
+       @Override
+       public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+   
+           System.out.println("切面--代理方法执行前");
+           // 通过反射执行目标类的方法
+           Object result = method.invoke(target, args);
+           System.out.println("切面--代理方法执行后");
+           return result;
+       }
+   }
+   ```
+
+   3. 生成代理对象
+
+      ```java
+      /**
+       * @ClassName DynamicProxyTest
+       * @Descripiton
+       * @Author initial_yang
+       * @Date 2020/2/21
+       */
+      public class DynamicProxyTest {
+      
+          @Test
+          public void testGetProxyClass() throws NoSuchMethodException, IllegalAccessException,
+                  InvocationTargetException, InstantiationException {
+              // 1. 获取动态代理类
+              Class proxyClass = Proxy.getProxyClass(DynamicProxyService.class.getClassLoader(), DynamicProxyService.class);
+              // 2. 获得代理类的构造函数，并传入参数类型InvocationHandler.class
+              Constructor constructor = proxyClass.getConstructor(InvocationHandler.class);
+              // 3. 通过构造函数来创建动态代理对象，将自定义的InvocationHandler实例传入
+              DynamicProxyService dynamicProxyService = (DynamicProxyService)
+                      constructor.newInstance(new DynamicProxyInvocationHandler(new DynamicProxyServiceImpl()));
+              // 4. 通过代理对象调用目标方法
+              dynamicProxyService.testDynamic();
+              System.out.println(proxyClass);
+          }
+          
+              @Test
+          public void testJDKDynamicProxy() {
+      
+      //        DynamicProxyServiceImpl subClass = new DynamicProxyServiceImpl();
+      //        DynamicProxyInvocationHandler handler = new DynamicProxyInvocationHandler(subClass);
+      //        DynamicProxyService proxyService = (DynamicProxyService) Proxy.newProxyInstance(subClass.getClass().getClassLoader(),
+      //                subClass.getClass().getInterfaces(), handler);
+              DynamicProxyService dynamicProxyService = (DynamicProxyService) Proxy.newProxyInstance(DynamicProxyService.class.getClassLoader(),
+                      DynamicProxyServiceImpl.class.getInterfaces(), new DynamicProxyInvocationHandler(new DynamicProxyServiceImpl()));
+              dynamicProxyService.testDynamic();
+              System.out.println(dynamicProxyService.getClass());
+      
+          }
+      
+      }
+      ```
+
+      
+
+#### CGLIB代理
+
+CGLIB（Code Generation Library），是一个代码生成的类库，可以在运行时动态的生成某个类的子类。
+
+注意，CGLIB是通过继承的方式做的动态代理，因此如果某个类被标记为`final`，那么它是无法使用CGLIB做动态代理的。
 
 ## 参考
 
 - [谈谈Java反射：从入门到实践，再到原理](https://juejin.im/post/5de3242e6fb9a071886675d7#heading-24)
+- [JDK动态代理以及Spring AOP使用介绍](https://www.jianshu.com/p/fa339e474c7a)
 
 
 
