@@ -228,6 +228,10 @@ atomicInteger.incrementAndGet(); //执行自增1
 
 死锁是指两个及以上的线程在执行过程中，由于竞争资源或彼此通信问题造成的一种阻塞现象，若无外力作用，它们都将无法推进下去。此时称系统处于死锁状态或系统产生了死锁，这些永远在互相等待的进程称为死锁进程。
 
+![死锁](imgs/死锁.png)
+
+如果程序运行时发生了死锁，绝大多数情况下都是无法在线解决的，只能重启、修正程序本身问题。所以，代码开发阶段互相审查，或者利用工具进行预防性排查，往往也是很重要的。
+
 #### 代码示例
 
 ```java
@@ -239,7 +243,7 @@ public class DeadLock {
         final Object lock2 = new Object();
         
         Thread thread1 = new Thread(() -> {
-           // sychronized特性，互斥锁（排它锁，独享锁，与之对应的是共享锁）：该锁一次只能被一个线程所持有
+           // synchronized特性，互斥锁（排它锁，独享锁，与之对应的是共享锁）：该锁一次只能被一个线程所持有
            synchronized (lock1) {
                System.out.println("thread1 lock1");
                try {
@@ -250,7 +254,7 @@ public class DeadLock {
                    e.printStackTrace();
                }
                // synchronized特性之，可重入锁：同一个线程在外层方法获取锁的时候，再进入该线程的内层方法会自动获取锁（前提锁对象得是同一个对象或者class），不会因为之前已经获取过还没释放而阻塞
-               // 如果sychronized不是可重入锁，那么光是调用`thread1.start()`执行到这里就会阻塞，此时lock1没释放
+               // 如果synchronized不是可重入锁，那么光是调用`thread1.start()`执行到这里就会阻塞，此时lock1没释放
                synchronized (lock2) {
                    System.out.println("thread1 lock2");
                }
@@ -281,7 +285,7 @@ public class DeadLock {
 输出
 
 ```java
-// 1，2的顺序不固定，看线程心情（加锁快慢）
+// 1，2的顺序不固定，看各线程具体加锁快慢（因为线程调度依赖于（操作系统）调度器， 设置了线程优先级也没有用）
 thread1 lock1
 thread2 lock2
 ```
@@ -291,15 +295,23 @@ thread2 lock2
 - `jps`获取进程号， `jstack`查看当前进程的堆栈信息（`jstack -h`获取使用帮助）
 - `jconsole`调用系统自带工具（windows）
 
+#### 死锁出现的原因
+
+- 互斥条件，只能被一个线程使用
+- 互斥条件长期持有，在使用结束之前不会释放，也不能被其他线程抢占
+- 存在循环依赖关系，多个锁出现依赖联系
+
 #### 如何预防死锁
 
-1. 以确定的顺序获得锁
+1. 尽量避免使用多个锁，且在必需的时候才持有锁
+
+2. 以确定的顺序获得锁
 
 比如上面代码示例中，都以lock1-> lock2的顺序获取锁，就不会出现相互等待其他线程释放锁的情况。
 
 多线程，银行家算法。 // todo
 
-2. 超时放弃获得锁
+3. 超时放弃获得锁
 
 在使用`sychronized`提供的内置锁时，线程获取不到锁会一直等待。
 
@@ -344,3 +356,4 @@ CAS通常与自旋结合。如果自旋CAS长时间不成功，会占用大量�
 
 - [不可不说的Java“锁”事](https://tech.meituan.com/Java_Lock.html)
 - [Java CAS 原理剖析](https://juejin.im/post/5a73cbbff265da4e807783f5)
+- [什么情况下Java程序会产生死锁？如何定位、修复？](https://time.geekbang.org/column/article/9266)
