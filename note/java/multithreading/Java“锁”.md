@@ -6,7 +6,7 @@
 
 > 同步，指的是线程按一定顺序执行。
 
-## 锁
+## 锁分类
 
 > 锁，是一种线程同步机制。
 
@@ -95,77 +95,7 @@ atomicInteger.incrementAndGet(); //执行自增1
 >
 > 锁不能降级只能升级，其中很大的一部分原因就是：避免无用的自旋。
 
-### 无锁 偏向锁 轻量级锁 重量级锁
-
-这四种锁指的是锁的状态，专门针对于synchronized。级别从低到高依次是：无锁->偏向锁->轻量级锁->重量级锁。**锁的状态只能升级不能降级**。
-
-> synchronized在操作同步资源前需要给同步资源加锁，这把锁就是存在在**Java对象头**里。
->
-> Java对象头：
->
-> 我们以Hotspot虚拟机为例，Hotspot的对象头主要包括两部分数据：Mark Word（标记字段）、Klass Pointer（类型指针）。
->
-> **Mark Word**：默认存储对象的HashCode，分代年龄和锁标志位信息。这些信息都是与对象自身定义无关的数据，所以Mark Word被设计成一个非固定的数据结构以便在极小的空间内存存储尽量多的数据。它会根据对象的状态复用自己的存储空间，也就是说在运行期间Mark Word里存储的数据会随着锁标志位的变化而变化。
->
-> > Mark Word 格式：
-> >
-> > | 锁状态   | 29 bit 或 61 bit                          | 1 bit 是否是偏向锁？       | 2 bit 锁标志位 |
-> > | -------- | ----------------------------------------- | -------------------------- | -------------- |
-> > | 无锁     |                                           | 0                          | 01             |
-> > | 偏向锁   | 线程ID                                    | 1                          | 01             |
-> > | 轻量级锁 | 指向栈中锁记录的指针                      | 此时这一位不用于标识偏向锁 | 00             |
-> > | 重量级锁 | 指向互斥量（重量级锁，Monitor对象）的指针 | 此时这一位不用于标识偏向锁 | 10             |
-> > | GC标记   |                                           | 此时这一位不用于标识偏向锁 | 11             |
->
-> **Klass Point**：对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例。
->
-> Monitor：
->
-> > Monitor可以理解为一个同步工具或一种同步机制，通常被描述为一个对象。每个Java对象就有一把看不见的锁，我们通常称为内部锁或者Monitor锁。
-> >
-> > Monitor是线程私有的数据结构，每一个线程都有一个可用monitor record列表，同时还有一个全局的可用列表。每一个被锁住的对象都会和一个monitor关联，同时monitor中有一个Owner字段存放拥有该锁的线程的唯一标识，表示该锁被这个线程占用。
->
-> synchronized通过Monitor来实现线程同步，Monitor是依赖于底层的操作系统的Mutex Lock（互斥锁）来实现的线程同步。
-
-#### 无锁
-
-> 无锁没有对资源进行锁定，所有的线程都能访问并修改同一个资源，但同时只有一个线程能修改成功。
->
-> 无锁的特点就是修改操作在循环内进行，线程会不断的尝试修改共享资源。如果没有冲突就修改成功并退出，否则就会继续循环尝试。如果有多个线程修改同一个值，必定会有一个线程能修改成功，而其他线程修改失败但会不断重试直到修改成功。
->
-> CAS的原理及应用就是无锁的实现。
->
-> 无锁无法全面替代有锁，但无锁在某些场合（比如读操作多的场景）下性能很高。
-
-#### 偏向锁
-
-> 偏向锁，是指一段同步代码一直被一个线程锁访问，那么该线程就会自动获取锁，以降低获取锁的代价。
->
-> 在大多数情况下，锁总是由同一个线程多次获得，偏向锁就是针对这种情况出现的。偏向锁的目标就是在只有一个线程执行同步代码块时能够提高性能。
->
-> 当一个线程获取锁并访问同步代码块时，会在Java对象头的Mark Word里存储偏向的线程id。在线程进入和退出同步代码块时不再通过CAS操作来加锁和解锁，而是检测Mark Word里是否存储着指向当前线程的偏向锁。
->
-> 偏向锁只有在遇到其他线程尝试竞争偏向锁时，原来持有偏向锁的线程才会释放锁，线程不会主动释放偏差锁。
->
-> 引入偏向锁时为了在无多线程竞争的情况下尽量减少不必要的轻量级锁执行路径。轻量级锁的获取及释放依赖多次CAS原子指令，而偏向锁只需要在置换ThreadID的时候依赖依次原子指令即可。
-
-偏向锁自JDK6后默认启用，可以通过JVM配置参数`-XX:-UseBiasedLocking=false`关闭。
-
-偏向锁的获得及撤销流程：
-
-![偏向锁的获得及撤销](imgs/偏向锁的获得和撤销.png)
-
-#### 轻量级锁
-
-> 指处于偏向锁时，被另外的线程所访问，偏向锁此时就会升级为轻量级锁，其他线程就会通过自旋的形式尝试获取锁，不会阻塞，从而提高性能。
-
-轻量级锁膨胀流程图：
-
-![轻量级锁流程图](imgs/轻量级锁流程图.png)
-
-#### 重量级锁
-
-> 在处于轻量级锁时，若当前只有一个等待线程，则该线程通过自旋进行等待。但是当自旋超过一定的次数，或者一个线程在持有锁，一个在自旋，又有第三个线程来访问，此时轻量级锁就会升级为重量级锁。
+> 
 
 ### 公平锁 非公平锁
 
@@ -224,15 +154,212 @@ atomicInteger.incrementAndGet(); //执行自增1
 >
 > JUC中的`Semaphore`、`CountDownLatch`就是共享锁。
 
-### 死锁
+
+
+## **synchronized**
+
+`synchronized`是由JVM实现的内置锁，锁的获取和释放由JVM实现。
+
+### 应用及原理
+
+- 修饰方法
+
+  ```java
+      /**
+       * javac -encoding utf-8 SyncDemo.java        javap -v SyncDemo.class
+       *  public synchronized void synMethod();
+       *     descriptor: ()V
+       *     flags: (0x0021) ACC_PUBLIC, ACC_SYNCHRONIZED // 标志符ACC_SYNCHRONIZED
+       *     Code:
+       *       stack=2, locals=1, args_size=1
+       *          0: getstatic     #2                  // Field java/lang/System.out:Ljava/io/PrintStream;
+       *          3: ldc           #3                  // String 同步普通方法
+       *          5: invokevirtual #4                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+       *          8: return
+       *       LineNumberTable:
+       *         line 12: 0
+       *         line 13: 8
+       */
+      public synchronized void synMethod() {
+          System.out.println("同步普通方法");
+      }
+  
+      /**
+       *  public static synchronized void synStaticMethod();
+       *     descriptor: ()V
+       *     flags: (0x0029) ACC_PUBLIC, ACC_STATIC, ACC_SYNCHRONIZED
+       *     Code:
+       *       stack=2, locals=0, args_size=0
+       *          0: getstatic     #4                  // Field java/lang/System.out:Ljava/io/PrintStream;
+       *          3: ldc           #9                  // String 同步静态方法
+       *          5: invokevirtual #6                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+       *          8: return
+       *       LineNumberTable:
+       *         line 120: 0
+       *         line 121: 8
+       */
+      public synchronized static void synStaticMethod() {
+          System.out.println("同步静态方法");
+      }
+  ```
+
+  修饰普通方法时，锁为调用方法的实例对象。
+
+  修饰静态方法时，锁为调用方法的类对象（Class对象，静态方法不能通过实例调用，只能通过类调用）。
+
+  当 synchronized 修饰同步方法时，并没有发现 `monitorenter` 和 `monitorexit` 指令，而是出现了一个 `ACC_SYNCHRONIZED` 标志。
+
+  > 这是因为 JVM 使用了 `ACC_SYNCHRONIZED` 访问标志来区分一个方法是否是同步方法。
+  >
+  > 当方法调用时，调用指令将会检查该方法是否被设置 `ACC_SYNCHRONIZED` 访问标志。
+  >
+  > 如果设置了该标志，执行线程将先持有 Monitor 对象，然后再执行方法。在该方法运行期间，其它线程将无法获取到该 Monitor 对象，当方法执行完成后，再释放该 Monitor 对象。
+
+- 修饰方法块
+
+  ```java
+      private final Object object = new Object();
+  	/**
+       *  public void synGlobleVariable();
+       *     descriptor: ()V
+       *     flags: (0x0001) ACC_PUBLIC
+       *     Code:
+       *       stack=2, locals=3, args_size=1
+       *          0: aload_0
+       *          1: getfield      #3                  // Field object:Ljava/lang/Object;
+       *          4: dup
+       *          5: astore_1
+       *          6: monitorenter
+       *          7: getstatic     #4                  // Field java/lang/System.out:Ljava/io/PrintStream;
+       *         10: ldc           #8                  // String 同步全局变量
+       *         12: invokevirtual #6                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+       *         15: aload_1
+       *         16: monitorexit
+       *         17: goto          25
+       *         20: astore_2
+       *         21: aload_1
+       *         22: monitorexit
+       *         23: aload_2
+       *         24: athrow
+       *         25: return
+       *         ···
+       */
+      public void synGlobleVariable() {
+          synchronized (object) {
+              System.out.println("同步全局变量");
+          }
+      }
+  ```
+
+  synchronized 在修饰同步代码块时，是由 `monitorenter` 和 `monitorexit` 指令来实现同步的。
+
+  进入 `monitorenter` 指令后，线程将持有 Monitor 对象，退出 `monitorenter` 指令后，线程将释放该 Monitor 对象。
+
+### 锁的升级
+
+这四种锁指的是锁的状态，专门针对于synchronized。级别从低到高依次是：无锁->偏向锁->轻量级锁->重量级锁。**锁的状态只能升级不能降级**。
+
+> synchronized在操作同步资源前需要给同步资源加锁，这把锁就是存在在**Java对象头**里。
+>
+> Java对象头：
+>
+> 我们以Hotspot虚拟机为例，Hotspot的对象头主要包括两部分数据：Mark Word（标记字段）、Klass Pointer（类型指针）。
+>
+> **Mark Word**：默认存储对象的HashCode，分代年龄和锁标志位信息。这些信息都是与对象自身定义无关的数据，所以Mark Word被设计成一个非固定的数据结构以便在极小的空间内存存储尽量多的数据。它会根据对象的状态复用自己的存储空间，也就是说在运行期间Mark Word里存储的数据会随着锁标志位的变化而变化。
+>
+> > Mark Word 格式：
+> >
+> > | 锁状态   | 29 bit 或 61 bit                          | 1 bit 是否是偏向锁？       | 2 bit 锁标志位 |
+> > | -------- | ----------------------------------------- | -------------------------- | -------------- |
+> > | 无锁     |                                           | 0                          | 01             |
+> > | 偏向锁   | 线程ID                                    | 1                          | 01             |
+> > | 轻量级锁 | 指向栈中锁记录的指针                      | 此时这一位不用于标识偏向锁 | 00             |
+> > | 重量级锁 | 指向互斥量（重量级锁，Monitor对象）的指针 | 此时这一位不用于标识偏向锁 | 10             |
+> > | GC标记   |                                           | 此时这一位不用于标识偏向锁 | 11             |
+>
+> **Klass Point**：对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例。
+>
+> Monitor：
+>
+> > Monitor可以理解为一个同步工具或一种同步机制，通常被描述为一个对象。每个Java对象就有一把看不见的锁，我们通常称为内部锁或者Monitor锁。
+> >
+> > Monitor是线程私有的数据结构，每一个线程都有一个可用monitor record列表，同时还有一个全局的可用列表。每一个被锁住的对象都会和一个monitor关联，同时monitor中有一个Owner字段存放拥有该锁的线程的唯一标识，表示该锁被这个线程占用。
+>
+> synchronized通过Monitor来实现线程同步，Monitor是依赖于底层的操作系统的Mutex Lock（互斥锁）来实现的线程同步。
+
+#### 无锁
+
+> 无锁没有对资源进行锁定，所有的线程都能访问并修改同一个资源，但同时只有一个线程能修改成功。
+>
+> 无锁的特点就是修改操作在循环内进行，线程会不断的尝试修改共享资源。如果没有冲突就修改成功并退出，否则就会继续循环尝试。如果有多个线程修改同一个值，必定会有一个线程能修改成功，而其他线程修改失败但会不断重试直到修改成功。
+>
+> CAS的原理及应用就是无锁的实现。
+>
+> 无锁无法全面替代有锁，但无锁在某些场合（比如读操作多的场景）下性能很高。
+
+#### 偏向锁
+
+> 偏向锁，是指一段同步代码一直被一个线程锁访问，那么该线程就会自动获取锁，以降低获取锁的代价。
+>
+> 在大多数情况下，锁总是由同一个线程多次获得，偏向锁就是针对这种情况出现的。偏向锁的目标就是在只有一个线程执行同步代码块时能够提高性能。
+>
+> 当一个线程获取锁并访问同步代码块时，会在Java对象头的Mark Word里存储偏向的线程id。在线程进入和退出同步代码块时不再通过CAS操作来加锁和解锁，而是检测Mark Word里是否存储着指向当前线程的偏向锁。
+>
+> 偏向锁只有在遇到其他线程尝试竞争偏向锁时，原来持有偏向锁的线程才会释放锁，线程不会主动释放偏差锁。
+>
+> 引入偏向锁时为了在无多线程竞争的情况下尽量减少不必要的轻量级锁执行路径。轻量级锁的获取及释放依赖多次CAS原子指令，而偏向锁只需要在置换ThreadID的时候依赖依次原子指令即可。
+
+偏向锁自JDK6后默认启用，可以通过JVM配置参数`-XX:-UseBiasedLocking=false`关闭。
+
+偏向锁的获得及撤销流程：
+
+![偏向锁的获得及撤销](D:/Code/IdeaProjects/learning/note/java/multithreading/imgs/%E5%81%8F%E5%90%91%E9%94%81%E7%9A%84%E8%8E%B7%E5%BE%97%E5%92%8C%E6%92%A4%E9%94%80.png)
+
+#### 轻量级锁
+
+> 指处于偏向锁时，被另外的线程所访问，偏向锁此时就会升级为轻量级锁，其他线程就会通过自旋的形式尝试获取锁，不会阻塞，从而提高性能。
+
+轻量级锁膨胀流程图：
+
+![轻量级锁流程图](D:/Code/IdeaProjects/learning/note/java/multithreading/imgs/%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81%E6%B5%81%E7%A8%8B%E5%9B%BE.png)
+
+#### 重量级锁
+
+> 在处于轻量级锁时，若当前只有一个等待线程，则该线程通过自旋进行等待。但是当自旋超过一定的次数，或者一个线程在持有锁，一个在自旋，又有第三个线程来访问，此时轻量级锁就会升级为重量级锁。
+
+### synchronized优化
+
+synchronized优化主要是要**减少锁的竞争**。
+
+我们应尽量让锁处于偏向锁或轻量级锁的状态，避免锁升级成重锁。
+
+此外，减小锁粒度可以降低锁的竞争。
+
+> 锁粒度： Class对象锁（类锁） > 普通实例对象锁 
+
+减小锁的持有时间可以提高CAS获取资源的成功率。
+
+## Lock
+
+Lock是自JDK1.5之后Java提供的锁。
+
+Lock 是一个接口类，常用的实现类有 `ReentrantLock`、`ReentrantReadWriteLock`（RRW）。
+
+### synchronized与Lock对比
+
+![synchronized与Lock](imgs/synchronized与Lock.jpg)
+
+从性能方面上来说，在并发量不高、竞争不激烈的情况下，Synchronized 同步锁由于具有分级锁的优势，性能上与 Lock 锁差不多；但在高负载、高并发的情况下，Synchronized 同步锁由于竞争激烈会升级到重量级锁，性能则没有 Lock 锁稳定。
+
+## 死锁
 
 死锁是指两个及以上的线程在执行过程中，由于竞争资源或彼此通信问题造成的一种阻塞现象，若无外力作用，它们都将无法推进下去。此时称系统处于死锁状态或系统产生了死锁，这些永远在互相等待的进程称为死锁进程。
 
-![死锁](imgs/死锁.png)
+![死锁](D:/Code/IdeaProjects/learning/note/java/multithreading/imgs/%E6%AD%BB%E9%94%81.png)
 
 如果程序运行时发生了死锁，绝大多数情况下都是无法在线解决的，只能重启、修正程序本身问题。所以，代码开发阶段互相审查，或者利用工具进行预防性排查，往往也是很重要的。
 
-#### 代码示例
+### 代码示例
 
 ```java
 public class DeadLock {
@@ -290,21 +417,20 @@ thread1 lock1
 thread2 lock2
 ```
 
-#### 死锁检测
+### 死锁检测
 
 - `jps`获取进程号， `jstack`查看当前进程的堆栈信息（`jstack -h`获取使用帮助）
 - `jconsole`调用系统自带工具（windows）
 
-#### 死锁出现的原因
+### 死锁出现的原因
 
 - 互斥条件，只能被一个线程使用
 - 互斥条件长期持有，在使用结束之前不会释放，也不能被其他线程抢占
 - 存在循环依赖关系，多个锁出现依赖联系
 
-#### 如何预防死锁
+### 如何预防死锁
 
 1. 尽量避免使用多个锁，且在必需的时候才持有锁
-
 2. 以确定的顺序获得锁
 
 比如上面代码示例中，都以lock1-> lock2的顺序获取锁，就不会出现相互等待其他线程释放锁的情况。
@@ -357,3 +483,4 @@ CAS通常与自旋结合。如果自旋CAS长时间不成功，会占用大量�
 - [不可不说的Java“锁”事](https://tech.meituan.com/Java_Lock.html)
 - [Java CAS 原理剖析](https://juejin.im/post/5a73cbbff265da4e807783f5)
 - [什么情况下Java程序会产生死锁？如何定位、修复？](https://time.geekbang.org/column/article/9266)
+- [多线程性能调优](https://time.geekbang.org/column/article/101651)

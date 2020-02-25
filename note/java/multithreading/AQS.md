@@ -11,6 +11,9 @@
 
 JUC中的大部分同步类都是基于AQS实现的，比如`Lock`、`ReentrantLock`、`Semaphore`、`CountDownLatch`等。
 
+## AQS原理
+### AQS获取锁流程
+![AQS获取锁流程](imgs/AQS获取锁流程.jpg)
 ## 参考
 
 - [AQS](http://concurrent.redspider.group/article/02/11.html)
