@@ -68,6 +68,20 @@ public class JmmTest {
         }
     }
 
+    private int i, j;
+    /**
+     * 测试happens-before 程序顺序性规则
+     */
+    @Test
+    public void test_happens_before_order() {
+        // i,j赋值重排序, 不影响最终求和的一致性, 我们可以理解成按代码顺序执行
+        i = 1;
+        j = 2;
+        int sum = i + j;
+        System.out.println(sum);
+    }
+
+
     /**
      * 测试多线程指令重排
      */
@@ -75,7 +89,7 @@ public class JmmTest {
     public void test_happens_before_reorder() {
         new Thread(this::writer).start();
         // 可能读到还没有被修改的值
-        new Thread(this::reader).start();
+        new Thread(this::reader).start(); // 输出0 或 1
     }
 
     private void writer() {
@@ -111,6 +125,28 @@ public class JmmTest {
     }
 
     /**
+     * 测试 happens-before synchronized锁规则
+     */
+    @Test
+    public void test_happens_before_synchronized() {
+        // 0,111依次输出(t1, t2执行顺序根据时间片分配不同可能有变化, 但是根据synchronized锁规则, 两个线程不会同时输出0)
+        new Thread(this::synWriter).start();
+        new Thread(this::synWriter).start();
+    }
+
+    private void synWriter() {
+        // 进入synchronized之前自动加锁
+        synchronized (this) {
+            System.out.println(x);
+            if (x == 0) {
+                x = 111;
+            }
+        }
+        // 离开synchronized后自动解锁
+    }
+
+
+    /**
      * 测试 happens-before start()规则
      */
     @Test
@@ -124,17 +160,22 @@ public class JmmTest {
         t1.start();
     }
 
+    /**
+     * 测试 happens-before join()规则
+     */
     @Test
-    public void test_happens_before_join() throws InterruptedException {
+    public void test_happens_before_join() {
         Thread t2 = new Thread(() -> x = 7);
         Thread t1 = new Thread(() -> {
             t2.start();
             try {
+                System.out.println("before join, x = " + x);
+                // t1中调用t2的join方法, t2中对成员变量x的操作对t1可见
                 t2.join();
+                System.out.println("after join, x= " + x);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println(x);
         });
         t1.start();
     }
