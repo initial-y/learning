@@ -47,4 +47,27 @@ public class WrapperClassCacheTest {
         // true 基本数据类型和包装类 == 比较，会先把基本类型装箱(装箱后equals比较的值)
         assertTrue(wrapperInt.equals(basicInt));
     }
+
+    /**
+     * Integer.valueOf() 底层使用的new Integer()构造方法
+     * Integer.parseInt() 返回 int 类型的值
+     */
+    @Test
+    public void test_wrapper_class_value_of_method() {
+        Integer inCacheInt1 = Integer.valueOf(127);
+        Integer inCacheInt2 = Integer.valueOf(127);
+        assertTrue(inCacheInt1 == inCacheInt2);
+
+        Integer outOfCacheInt1 = Integer.valueOf(128);
+        Integer outOfCacheInt2 = Integer.valueOf(128);
+        assertFalse(outOfCacheInt1 == outOfCacheInt2);
+
+        Integer inCacheStrInt1 = Integer.valueOf("127");
+        Integer inCacheStrInt2 = Integer.valueOf("127");
+        assertTrue(inCacheStrInt1 == inCacheStrInt2);
+
+        Integer outOfCacheStrInt1 = Integer.valueOf("128");
+        Integer outOfCacheStrInt2 = Integer.valueOf("128");
+        assertFalse(outOfCacheStrInt1 == outOfCacheStrInt2);
+    }
 }
