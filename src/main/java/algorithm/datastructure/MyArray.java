@@ -74,8 +74,17 @@ public class MyArray<E> {
         if (index < 0 || index > size) {
             throw new IllegalArgumentException("index error");
         }
-        // todo
-        return null;
+        E e = data[index];
+        // i < size - 1
+        for(int i = index; i < size - 1; i++) {
+            data[i] = data[i + 1];
+        }
+        data[size - 1] = null;
+        size--;
+        if (size <= data.length >> 2) {
+            resize(data.length >> 1);
+        }
+        return e;
     }
 
     public E removeFirst() {
@@ -93,7 +102,8 @@ public class MyArray<E> {
      */
     private void resize(int newSize) {
         E[] newData = (E[]) new Object[newSize];
-        for (int i = 0; i < data.length; i++) {
+        // i < size 而不是data.length: 扩容可以用data.length(扩容时data.length = size), 缩容只能用size
+        for (int i = 0; i < size; i++) {
             newData[i] = data[i];
         }
         data = newData;
