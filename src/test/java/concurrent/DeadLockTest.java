@@ -3,12 +3,12 @@ package concurrent;
 import org.junit.Test;
 
 /**
- * @ClassName SyncTest
+ * @ClassName DeadLockTest
  * @Descripiton
  * @Author initial_yang
  * @Date 2020/2/24
  */
-public class SyncTest {
+public class DeadLockTest {
 
     @Test
     public void test_dead_lock() {
