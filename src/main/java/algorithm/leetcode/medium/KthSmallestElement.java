@@ -31,4 +31,20 @@ public class KthSmallestElement {
 
         return list.stream().sorted().collect(Collectors.toList()).get(k - 1);
     }
+
+    /**
+     * 如何写出正确的程序：
+     *      明确变量的含义
+     *      循环不变量
+     *      小数据量调试
+     *      大数据量测试
+     * @param matrix
+     * @param k
+     * @return
+     */
+    public int kthSmallestBinarySearch(int[][] matrix, int k) {
+        // todo
+        return 0;
+    }
+
 }
