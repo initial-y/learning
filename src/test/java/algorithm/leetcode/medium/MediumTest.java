@@ -33,4 +33,18 @@ public class MediumTest {
         System.out.println(gson.toJson(parenthesis));
         assertEquals(parenthesis.size(), 5);
     }
+
+    @Test
+    public void test_SortColors_sortColors() {
+        int[] nums = {2, 0, 2, 1, 1, 0};
+        new SortColors().sortColors(nums);
+        System.out.println(gson.toJson(nums));
+        assertEquals(nums[0], 0);
+    }
+
+    @Test
+    public void test_KthLargestElement_findKthLargest() {
+        int[] nums = {3, 2, 1, 5, 6, 4};
+        assertEquals(new KthLargestElement().findKthLargest(nums, 2), 5);
+    }
 }
