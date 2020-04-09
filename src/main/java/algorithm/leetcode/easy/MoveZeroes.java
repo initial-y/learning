@@ -7,8 +7,9 @@ import java.util.Arrays;
  * @Descripiton
  * @Author initial_yang
  * @Date 2020/4/8
+ * @num 283
  * @see https://leetcode-cn.com/problems/move-zeroes/
- * @see leetcode 27 26 80
+ * @reference leetcode 27 26 80
  */
 public class MoveZeroes {
 
