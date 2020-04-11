@@ -24,4 +24,5 @@ public class MyLinkedListStackTest {
             System.out.println(stack.toString());
         }
     }
+
 }
