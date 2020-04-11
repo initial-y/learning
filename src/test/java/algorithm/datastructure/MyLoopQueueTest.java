@@ -59,18 +59,21 @@ public class MyLoopQueueTest {
     }
 
     @Test
-    public void test_loopQueue_and_arrayQueue() {
+    public void test_loopQueue_and_arrayQueue_and_linkedListQueue() {
         int count = 100000;
         MyQueue arrayQueue = new MyArrayQueue(count);
         MyQueue loopQueue = new MyLoopQueue(count);
+        MyQueue linkedListQueue = new MyLinkedListQueue();
 
         Random random = new Random();
         for (int i = 0; i < count; i++) {
             arrayQueue.enqueue(random.nextInt());
             loopQueue.enqueue(random.nextInt());
+            linkedListQueue.enqueue(random.nextInt());
         }
         System.out.println(getQueueRuntimeMillis(loopQueue, count));
         System.out.println(getQueueRuntimeMillis(arrayQueue, count));
+        System.out.println(getQueueRuntimeMillis(linkedListQueue, count));
 
     }
 
