@@ -15,8 +15,16 @@ public class MyArray<E> {
     private int size;
 
     public MyArray(int capacity) {
-        data = (E[]) new Object[10];
+        data = (E[]) new Object[capacity];
         size = 0;
+    }
+
+    public MyArray() {
+        this(10);
+    }
+
+    public int getCapacity() {
+        return data.length;
     }
 
     public int getSize() {
@@ -93,6 +101,10 @@ public class MyArray<E> {
 
     public E removeLast() {
         return this.remove(size - 1);
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
     }
 
 

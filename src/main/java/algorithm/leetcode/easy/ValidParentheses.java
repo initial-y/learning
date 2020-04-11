@@ -7,6 +7,8 @@ import java.util.Stack;
  * @Descripiton
  * @Author initial_yang
  * @Date 2020/4/10
+ * @no 20
+ * @see https://leetcode-cn.com/problems/valid-parentheses/
  */
 public class ValidParentheses {
 
