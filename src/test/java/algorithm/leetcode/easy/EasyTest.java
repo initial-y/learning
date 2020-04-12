@@ -2,8 +2,6 @@ package algorithm.leetcode.easy;
 
 import org.junit.Test;
 
-import java.util.Stack;
-
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -31,9 +29,11 @@ public class EasyTest {
     }
 
     @Test
-    public void test_stack() {
-        Stack stack = new Stack();
-        System.out.println(stack.peek());
+    public void test_RemoveLinkedListElements_removeElements() {
+        RemoveLinkedListElements rm = new RemoveLinkedListElements();
+        RemoveLinkedListElements.ListNode listNode = rm.new ListNode(1);
+        listNode.next = rm.new ListNode(2);
+        System.out.println(rm.removeElements(listNode, 1).val);
     }
 
 }
