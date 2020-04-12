@@ -18,6 +18,7 @@ public class TestNaverCachedData {
         NaverCachedData<Integer> cachedData = new NaverCachedData<>();
         List<Integer> nums = Arrays.asList(1, 1, 3);
         nums.parallelStream().forEach(num -> cachedData.processCachedData(num));
+        nums.parallelStream().forEach(num -> cachedData.processCachedData(num));
     }
 
 }
