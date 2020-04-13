@@ -33,7 +33,17 @@ public class EasyTest {
         RemoveLinkedListElements rm = new RemoveLinkedListElements();
         RemoveLinkedListElements.ListNode listNode = rm.new ListNode(1);
         listNode.next = rm.new ListNode(2);
-        System.out.println(rm.removeElements(listNode, 1).val);
+        RemoveLinkedListElements.ListNode head = rm.removeElements(listNode, 1);
+        System.out.println(head != null ? head.val : null);
+    }
+
+    @Test
+    public void test_RemoveLinkedListElements_removeElementsWithDummyHead() {
+        RemoveLinkedListElements rm = new RemoveLinkedListElements();
+        RemoveLinkedListElements.ListNode listNode = rm.new ListNode(1);
+        listNode.next = rm.new ListNode(2);
+        RemoveLinkedListElements.ListNode head = rm.removeElementsWithDummyHead(listNode, 2);
+        System.out.println(head != null ? head.val : null);
     }
 
 }

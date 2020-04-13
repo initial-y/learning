@@ -31,6 +31,31 @@ public class RemoveLinkedListElements {
         return head;
     }
 
+    /**
+     * 通过虚拟头结点删除
+     * @param head
+     * @param val
+     * @return
+     */
+    public ListNode removeElementsWithDummyHead(ListNode head, int val) {
+        // 按理应该赋值null, 这里题设指定了数据接口
+        ListNode dummyHead = new ListNode(-1);
+        dummyHead.next = head;
+        head = dummyHead;
+
+        // 设置了虚拟头结点 从head.next开始遍历
+        while (head.next != null ) {
+            if (head.next.val == val) {
+                // 值匹配则跳过
+                head.next = head.next.next;
+            } else {
+                // 值不匹配修改head(等价于修改removeElements的prev)
+                head = head.next;
+            }
+        }
+        return dummyHead.next;
+    }
+
 
     public class ListNode {
         int val;
