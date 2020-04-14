@@ -10,6 +10,12 @@ package algorithm.leetcode.easy;
  */
 public class RemoveLinkedListElements {
 
+    /**
+     * 比较 & 删除， 需处理头结点
+     * @param head
+     * @param val
+     * @return
+     */
     public ListNode removeElements(ListNode head, int val) {
         // head.val = val
         while (head != null && head.val == val) {
@@ -61,6 +67,32 @@ public class RemoveLinkedListElements {
         int val;
         ListNode next;
         ListNode(int x) { val = x; }
+
+        // 构造函数
+        public ListNode(int[] arr) {
+            if (arr == null || arr.length == 0) {
+                throw new IllegalArgumentException("empty arr");
+            }
+//            ListNode cur = new ListNode(arr[0]);
+            this.val = arr[0];
+            ListNode cur = this;
+            for (int i = 1; i < arr.length; i++) {
+                cur.next = new ListNode(arr[i]);
+                cur = cur.next;
+            }
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            ListNode cur = this;
+            while (cur != null) {
+               sb.append(cur.val + "->");
+               cur = cur.next;
+            }
+            sb.append("Null");
+            return sb.toString();
+        }
     }
 
 }
