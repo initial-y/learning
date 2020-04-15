@@ -47,6 +47,16 @@ public class EasyTest {
     }
 
     @Test
+    public void test_RemoveLinkedListElements_removeElementsWithRecursion() {
+        int[] arr = {1, 2, 6, 3, 4, 5, 6};
+        RemoveLinkedListElements rm = new RemoveLinkedListElements();
+        RemoveLinkedListElements.ListNode listNode = rm.new ListNode(arr);
+        RemoveLinkedListElements.ListNode node = rm.removeElementsWithRecursion(listNode, 6);
+        System.out.println(node.toString());
+    }
+
+
+    @Test
     public void test_PalindromeLinkedList_isPalindromeWithReverseListNode() {
         PalindromeLinkedList palindrome = new PalindromeLinkedList();
         int[] arr1 = {1, 0, 3, 4, 0, 1};
@@ -60,6 +70,13 @@ public class EasyTest {
         int[] arr3 = {1, 2, 3, 2, 1};
         PalindromeLinkedList.ListNode listNode3 = palindrome.new ListNode(arr3);
         assertTrue(palindrome.isPalindromeWithReverseListNode(listNode3));
+    }
+
+    @Test
+    public void test_ReverseLinkedList_reverseList() {
+        int[] arr = {1, 2, 3, 4, 5, 6};
+        ListNode head = new ListNode(arr);
+        System.out.println(new ReverseLinkedList().reverseList(head));
     }
 
 }

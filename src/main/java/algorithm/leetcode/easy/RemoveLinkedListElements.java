@@ -62,6 +62,27 @@ public class RemoveLinkedListElements {
         return dummyHead.next;
     }
 
+    /**
+     * 利用递归解决
+     * @param head
+     * @param val
+     * @return
+     */
+    public ListNode removeElementsWithRecursion(ListNode head, int val) {
+        if (head == null) {
+            return null;
+        }
+//        ListNode res = removeElementsWithRecursion(head.next, val);
+//        if (head.val == val) {
+//            return res;
+//        } else {
+//            head.next = res;
+//            return head;
+//        }
+        head.next = removeElementsWithRecursion(head.next, val);
+        return head.val == val ? head.next : head;
+    }
+
 
     public class ListNode {
         int val;
