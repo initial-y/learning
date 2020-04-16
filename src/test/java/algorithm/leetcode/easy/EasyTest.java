@@ -32,17 +32,17 @@ public class EasyTest {
     public void test_RemoveLinkedListElements_removeElements() {
         int[] arr = {1, 2, 6, 3, 4, 5, 6};
         RemoveLinkedListElements rm = new RemoveLinkedListElements();
-        RemoveLinkedListElements.ListNode listNode = rm.new ListNode(arr);
-        RemoveLinkedListElements.ListNode node = rm.removeElements(listNode, 6);
+        ListNode listNode = new ListNode(arr);
+        ListNode node = rm.removeElements(listNode, 6);
         System.out.println(node.toString());
     }
 
     @Test
     public void test_RemoveLinkedListElements_removeElementsWithDummyHead() {
         RemoveLinkedListElements rm = new RemoveLinkedListElements();
-        RemoveLinkedListElements.ListNode listNode = rm.new ListNode(1);
-        listNode.next = rm.new ListNode(2);
-        RemoveLinkedListElements.ListNode head = rm.removeElementsWithDummyHead(listNode, 2);
+        ListNode listNode = new ListNode(1);
+        listNode.next = new ListNode(2);
+        ListNode head = rm.removeElementsWithDummyHead(listNode, 2);
         System.out.println(head != null ? head.val : null);
     }
 
@@ -50,8 +50,8 @@ public class EasyTest {
     public void test_RemoveLinkedListElements_removeElementsWithRecursion() {
         int[] arr = {1, 2, 6, 3, 4, 5, 6};
         RemoveLinkedListElements rm = new RemoveLinkedListElements();
-        RemoveLinkedListElements.ListNode listNode = rm.new ListNode(arr);
-        RemoveLinkedListElements.ListNode node = rm.removeElementsWithRecursion(listNode, 6);
+        ListNode listNode = new ListNode(arr);
+        ListNode node = rm.removeElementsWithRecursion(listNode, 6);
         System.out.println(node.toString());
     }
 
@@ -60,15 +60,15 @@ public class EasyTest {
     public void test_PalindromeLinkedList_isPalindromeWithReverseListNode() {
         PalindromeLinkedList palindrome = new PalindromeLinkedList();
         int[] arr1 = {1, 0, 3, 4, 0, 1};
-        PalindromeLinkedList.ListNode listNode1 = palindrome.new ListNode(arr1);
+        ListNode listNode1 = new ListNode(arr1);
         assertFalse(palindrome.isPalindromeWithReverseListNode(listNode1));
 
         int[] arr2 = {1, 2, 2, 1};
-        PalindromeLinkedList.ListNode listNode2 = palindrome.new ListNode(arr2);
+        ListNode listNode2 = new ListNode(arr2);
         assertTrue(palindrome.isPalindromeWithReverseListNode(listNode2));
 
         int[] arr3 = {1, 2, 3, 2, 1};
-        PalindromeLinkedList.ListNode listNode3 = palindrome.new ListNode(arr3);
+        ListNode listNode3 = new ListNode(arr3);
         assertTrue(palindrome.isPalindromeWithReverseListNode(listNode3));
     }
 
