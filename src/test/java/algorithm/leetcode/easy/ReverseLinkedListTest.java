@@ -18,4 +18,12 @@ public class ReverseLinkedListTest {
         System.out.println(reverseNode.toString());
     }
 
+    @Test
+    public void test_pro() {
+        int[] arr = {1, 2, 3, 4, 5};
+        ListNode head = new ListNode(arr);
+        ListNode reverseNode = new ReverseLinkedList().reverseListPro(head);
+        System.out.println(reverseNode.toString());
+    }
+
 }

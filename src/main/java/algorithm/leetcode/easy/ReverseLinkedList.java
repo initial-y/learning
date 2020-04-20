@@ -26,6 +26,23 @@ public class ReverseLinkedList {
         return reverseNode;
     }
 
+    /**
+     * reverseList()进阶： 时间复杂度O(n), 空间复杂度O(1)
+     * @param head
+     * @return
+     */
+    public ListNode reverseListPro(ListNode head) {
+        ListNode cur = head;
+        ListNode prev = null;
+        while (cur != null) {
+            ListNode temp = cur.next;
+            cur.next = prev;
+            prev = cur;
+            cur = temp;
+        }
+        return prev;
+    }
+
 
     /**
      * 通过递归反转链表： 时间复杂度O(n), 空间复杂度O(n)
