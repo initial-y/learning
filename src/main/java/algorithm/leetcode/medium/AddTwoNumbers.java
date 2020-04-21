@@ -2,9 +2,6 @@ package algorithm.leetcode.medium;
 
 import algorithm.leetcode.easy.ListNode;
 
-import java.util.Objects;
-import java.util.Stack;
-
 /**
  * @ClassName AddTwoNumbers
  * @Descripiton
@@ -15,7 +12,13 @@ import java.util.Stack;
  */
 public class AddTwoNumbers {
 
-    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+    /**
+     * 测试用例未覆盖完全版本
+     * @param l1
+     * @param l2
+     * @return
+     */
+    public ListNode addTwoNumbersWrong(ListNode l1, ListNode l2) {
         long num1 = this.getReverseNum(l1);
         long num2 = this.getReverseNum(l2);
 
@@ -31,6 +34,11 @@ public class AddTwoNumbers {
         return prev;
     }
 
+    /**
+     * long类型也抵不住24位的test case
+     * @param head
+     * @return
+     */
     private long getReverseNum(ListNode head) {
         StringBuilder sb = new StringBuilder();
         StringBuilder tmp;
@@ -55,5 +63,47 @@ public class AddTwoNumbers {
         }
 
         return prev;
+    }
+
+    /**
+     * 纯链表操作版本
+     * 关注对应链表节点的值
+     * @param l1
+     * @param l2
+     * @return
+     */
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        // 虚拟头结点,简化操作
+        ListNode dummyHead = new ListNode(-1);
+        ListNode cur = dummyHead;
+        // 不破坏l1, l2结构
+        ListNode tmp1 = l1;
+        ListNode tmp2 = l2;
+        // 进位
+        int carry = 0;
+        while (tmp1 != null || tmp2 != null) {
+            // 处理空节点
+            int num1 = (tmp1 == null) ? 0 : tmp1.val;
+            int num2 = (tmp2 == null) ? 0 : tmp2.val;
+
+            // 计算节点值与进位值
+            int sum = num1 + num2 + carry;
+            carry = sum / 10;
+            cur.next = new ListNode(sum % 10);
+            cur = cur.next;
+
+            // 节点后移
+            if (tmp1 != null) {
+                tmp1 = tmp1.next;
+            }
+            if (tmp2 != null) {
+                tmp2 = tmp2.next;
+            }
+        }
+        // 循环完毕还需要进位
+        if (carry > 0) {
+            cur.next = new ListNode(carry);
+        }
+        return dummyHead.next;
     }
 }
