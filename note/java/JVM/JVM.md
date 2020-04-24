@@ -464,11 +464,39 @@ G1收集器运行流程如下图：
 
 #### ZGC收集器
 
-### 垃圾收集器常用参数
+### JVM常用参数
 
 ![GCParameters](imgs/GCParameters.jpg)
 
-### GC日志
+#### 指定堆内存参数
+
+- `-Xms<heap size>[unit]` : 指定最小堆内存
+- `-XmX<heap size>[unit]` : 指定最大堆内存
+- `-XX:MaxMetaspaceSize=<metaspace size>[unit]` :  since java 8， 指定metaspace大小。不建议设置，java8自动扩展metaspace大小，如果对metaspace要求严苛可以设置。
+
+- 设置young generation大小：
+  - `-XX:NewSize=<young size>[unit]`
+  - `-XX:MaxNewSize=<young size>[unit]`
+
+#### 指定垃圾回收器参数
+
+- `-XX:+UseSerialGC` : Serial垃圾收集器
+- `-XX:+UseParallelGC`: Parallel垃圾收集器
+- `-XX:+UseConcMarkSweepGC -XX:+UseParNewGC`: CMS + ParNew
+- `-XX:+UseG1GC`: G1
+
+#### GC记录
+
+- `-XX:NumberOfGCLogFiles=<number of log files>` : 表示一个应用程序的生命周期中可以被写入的日志文件的最大数量。`GCLogFileSize` 指定日志文件的大小。最后的 `loggc` 表示日志文件的位置，被 `log:gc` 替代。
+- `-XX:GCLogFileSize=<file size>[unit]` : GC日志文件最大大小
+
+#### 内存溢出处理
+
+- `-XX:+HeapDumpOnOutOfMemoryError` : 发生OOM错误，JVM导出内存信息到`HeapDumpPath`中。
+- `-XX:HeapDumpPath=./java_pid<pid>.hprof` : 表示需要写入的文件的存放位置。文件名可任意指定。若 JVM 在文件名中找到了 标签，那么当前导致内存溢出错误的进程的`进程 id` 将会设置到文件名中。
+- `-XX:OnOutOfMemoryError="<cmd args>;<cmd args>"` : 用于一旦发生了内存溢出错误发出需要执行的紧急命令。
+
+
 
 ---
 
