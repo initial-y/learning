@@ -29,11 +29,11 @@ public class ThreadStateTest {
         }, "b");
 
         a.start();
-//        try {
-//            Thread.sleep(1000L); // 需要注意这里main线程休眠了1000毫秒，而testMethod()里休眠了2000毫秒
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            Thread.sleep(1000L); // 需要注意这里main线程休眠了1000毫秒，而testMethod()里休眠了2000毫秒
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         b.start();
         System.out.println(a.getName() + ":" + a.getState()); // 输出？
         System.out.println(b.getName() + ":" + b.getState()); // 输出？
