@@ -28,22 +28,20 @@ public class ThreadStateTest {
             }
         }, "b");
 
-//        synchronized (this) {
-            a.start();
-            try {
-                Thread.sleep(1000L); // 需要注意这里main线程休眠了1000毫秒，而testMethod()里休眠了2000毫秒
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            b.start();
-//        }
+        a.start();
+        try {
+            Thread.sleep(1000L); // 需要注意这里main线程休眠了1000毫秒，而testMethod()里休眠了2000毫秒
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        b.start();
         System.out.println(a.getName() + ":" + a.getState()); // 输出？
         System.out.println(b.getName() + ":" + b.getState()); // 输出？
     }
 
     @Test
     public void test() {
-        IntStream.range(1, 10000).forEach(i -> {
+        IntStream.range(1, 1000).forEach(i -> {
             System.out.println("----" + i + "----");
             this.blockedTest();
         });
