@@ -51,4 +51,30 @@ public class MergeTwoSortedLists {
         return node;
     }
 
+    /**
+     * 递归
+     * @param l1
+     * @param l2
+     * @return
+     */
+    public ListNode mergeTwoListsWithRecursion(ListNode l1, ListNode l2) {
+        // 终止条件
+        if (l1 == null) {
+            return l2;
+        }
+        if (l2 == null) {
+            return l1;
+        }
+
+        // 递推公式
+        if (l1.val <= l2.val) {
+            l1.next = mergeTwoListsWithRecursion(l1.next, l2);
+            return l1;
+        } else {
+            l2.next = mergeTwoListsWithRecursion(l1, l2.next);
+            return l2;
+        }
+
+    }
+
 }
