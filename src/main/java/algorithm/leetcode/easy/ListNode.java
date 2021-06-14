@@ -15,6 +15,8 @@ public class ListNode {
         this.next = null;
     }
 
+    ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+
     // 构造函数
     public ListNode(int[] arr) {
         if (arr == null || arr.length == 0) {
