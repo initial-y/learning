@@ -1,4 +1,4 @@
-package algorithm.leetcode.easy;
+package algorithm.leetcode;
 
 /**
  * @ClassName ListNode

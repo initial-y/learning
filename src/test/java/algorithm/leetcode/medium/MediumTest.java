@@ -1,5 +1,6 @@
 package algorithm.leetcode.medium;
 
+import algorithm.leetcode.easy.ListNode;
 import com.google.gson.Gson;
 import org.junit.Test;
 
@@ -46,5 +47,13 @@ public class MediumTest {
     public void test_KthLargestElement_findKthLargest() {
         int[] nums = {3, 2, 1, 5, 6, 4};
         assertEquals(new KthLargestElement().findKthLargest(nums, 2), 5);
+    }
+
+
+    @Test
+    public void test_removeNthFromEnd() {
+        int[] nums = {1};
+        ListNode node = new RemoveNthNodeFromEndOfList().removeNthFromEnd(new ListNode(nums), 2);
+        System.out.println(node.toString());
     }
 }
