@@ -1,6 +1,6 @@
 package algorithm.leetcode.medium;
 
-import algorithm.leetcode.easy.ListNode;
+import algorithm.leetcode.ListNode;
 
 /**
  * @ClassName AddTwoNumbers

@@ -1,6 +1,7 @@
 package algorithm.leetcode.easy;
 
 import org.junit.Test;
+import algorithm.leetcode.ListNode;
 
 /**
  * @ClassName ReverseLinkedListTest

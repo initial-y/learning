@@ -1,5 +1,5 @@
 package algorithm.leetcode.easy;
-
+import algorithm.leetcode.ListNode;
 /**
  * @author initial_y
  * @className RemoveDuplicatesFromSortedList

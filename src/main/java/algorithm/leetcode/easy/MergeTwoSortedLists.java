@@ -1,5 +1,7 @@
 package algorithm.leetcode.easy;
 
+import algorithm.leetcode.ListNode;
+
 /**
  * @className MergeTwoSortedLists
  * @description

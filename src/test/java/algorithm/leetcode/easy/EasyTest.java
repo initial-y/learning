@@ -1,6 +1,7 @@
 package algorithm.leetcode.easy;
 
 import org.junit.Test;
+import algorithm.leetcode.ListNode;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -70,6 +71,13 @@ public class EasyTest {
         int[] arr3 = {1, 2, 3, 2, 1};
         ListNode listNode3 = new ListNode(arr3);
         assertTrue(palindrome.isPalindromeWithReverseListNode(listNode3));
+    }
+
+    @Test
+    public void test_isPalindrome2() {
+        PalindromeLinkedList palindromeLinkedList = new PalindromeLinkedList();
+        ListNode l1 = new ListNode(new int[] {1, 2, 3, 4});
+        palindromeLinkedList.isPalindrome2(l1);
     }
 
     @Test

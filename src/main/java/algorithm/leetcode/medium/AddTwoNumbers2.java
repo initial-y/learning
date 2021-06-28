@@ -3,6 +3,9 @@ package algorithm.leetcode.medium;
 
 import algorithm.leetcode.ListNode;
 
+import java.util.List;
+import java.util.Stack;
+
 /**
  * @className: AddTwoNumbers2
  * @author: initial_yang
@@ -13,7 +16,7 @@ import algorithm.leetcode.ListNode;
 public class AddTwoNumbers2 {
 
     /**
-     * 翻转链表方式
+     * 迭代 翻转链表方式
      * @param l1
      * @param l2
      * @return
@@ -48,7 +51,7 @@ public class AddTwoNumbers2 {
     }
 
     /**
-     * 翻转链表
+     * 迭代 翻转链表
      * @param head
      * @return
      */
@@ -73,12 +76,8 @@ public class AddTwoNumbers2 {
         int carry = 0;
         while (reverseL1 != null && reverseL2 != null) {
             int sum = reverseL1.val + reverseL2.val + carry;
-            if (sum >= 10 ) {
-                sum = sum % 10;
-                carry = 1;
-            } else {
-                carry = 0;
-            }
+            carry = sum / 10;
+            sum = sum % 10;
             ListNode cur = new ListNode(sum);
             cur.next = sumNode;
             sumNode = cur;
@@ -88,12 +87,8 @@ public class AddTwoNumbers2 {
         }
         while (reverseL1 != null) {
             int sum = reverseL1.val + carry;
-            if (sum >= 10 ) {
-                sum = sum % 10;
-                carry = 1;
-            } else {
-                carry = 0;
-            }
+            carry = sum / 10;
+            sum = sum % 10;
             ListNode cur = new ListNode(sum);
             cur.next = sumNode;
             sumNode = cur;
@@ -102,12 +97,8 @@ public class AddTwoNumbers2 {
         }
         while (reverseL2 != null) {
             int sum = reverseL2.val + carry;
-            if (sum >= 10 ) {
-                sum = sum % 10;
-                carry = 1;
-            } else {
-                carry = 0;
-            }
+            carry = sum / 10;
+            sum = sum % 10;
             ListNode cur = new ListNode(sum);
             cur.next = sumNode;
             sumNode = cur;
@@ -137,5 +128,59 @@ public class AddTwoNumbers2 {
         head.next.next = head;
         head.next = null;
         return reverseNode;
+    }
+
+    /**
+     * 利用Stack
+     * @param l1
+     * @param l2
+     * @return
+     */
+    public ListNode addTwoNumbers2(ListNode l1, ListNode l2) {
+        Stack<Integer> s1 = turnToStack(l1);
+        Stack<Integer> s2 = turnToStack(l2);
+
+        int carry = 0;
+        ListNode sumNode = null;
+        while (!s1.isEmpty() && !s2.isEmpty()) {
+            int sum = s1.pop() + s2.pop() + carry;
+            carry = sum / 10;
+            ListNode cur = new ListNode(sum % 10);
+            cur.next = sumNode;
+            sumNode = cur;
+        }
+
+        while (!s1.isEmpty()) {
+            int sum = s1.pop() + carry;
+            carry = sum / 10;
+            ListNode cur = new ListNode(sum % 10);
+            cur.next = sumNode;
+            sumNode = cur;
+        }
+
+        while (!s2.isEmpty()) {
+            int sum = s2.pop() + carry;
+            carry = sum / 10;
+            ListNode cur = new ListNode(sum % 10);
+            cur.next = sumNode;
+            sumNode = cur;
+        }
+
+        if (carry > 0) {
+            ListNode cur = new ListNode(carry);
+            cur.next = sumNode;
+            sumNode = cur;
+        }
+
+        return sumNode;
+    }
+
+    private Stack turnToStack(ListNode head) {
+        Stack<Integer> stack = new Stack<>();
+        while (head != null) {
+            stack.push(head.val);
+            head = head.next;
+        }
+        return stack;
     }
 }

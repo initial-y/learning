@@ -1,5 +1,8 @@
 package algorithm.leetcode.easy;
 
+import java.util.Stack;
+import algorithm.leetcode.ListNode;
+
 /**
  * @ClassName PalindromeLinkedList
  * @Descripiton
@@ -60,4 +63,29 @@ public class PalindromeLinkedList {
         return head.val == reverseNode.val;
     }
 
+
+    public boolean isPalindrome2(ListNode head) {
+        // todo 翻转链表会改变head的引用
+        ListNode reverse = this.reverse(head);
+        while (reverse != null && head != null) {
+            if (reverse.val != head.val) {
+                return false;
+            }
+            reverse = reverse.next;
+            head = head.next;
+        }
+        return true;
+    }
+
+    private ListNode reverse(ListNode head) {
+        ListNode reverse = null;
+        ListNode tmp = head;
+        while (tmp != null) {
+            ListNode cur = tmp.next;
+            tmp.next = reverse;
+            reverse = tmp;
+            tmp = cur;
+        }
+        return reverse;
+    }
 }

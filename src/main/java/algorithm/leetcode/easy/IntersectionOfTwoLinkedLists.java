@@ -1,5 +1,6 @@
 package algorithm.leetcode.easy;
 
+import algorithm.leetcode.ListNode;
 /**
  * @ClassName IntersectionOfTwoLinkedLists
  * @Descripiton
