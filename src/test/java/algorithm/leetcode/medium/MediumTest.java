@@ -1,6 +1,6 @@
 package algorithm.leetcode.medium;
 
-import algorithm.leetcode.easy.ListNode;
+import algorithm.leetcode.ListNode;
 import com.google.gson.Gson;
 import org.junit.Test;
 
@@ -53,7 +53,15 @@ public class MediumTest {
     @Test
     public void test_removeNthFromEnd() {
         int[] nums = {1};
-        ListNode node = new RemoveNthNodeFromEndOfList().removeNthFromEnd(new ListNode(nums), 2);
-        System.out.println(node.toString());
+//        ListNode node = new RemoveNthNodeFromEndOfList().removeNthFromEnd(new ListNode(nums), 2);
+//        System.out.println(node.toString());
+    }
+
+    @Test
+    public void testAddTwoNumbers2() {
+        ListNode l1 = new ListNode(new int[] {7, 2, 4, 3});
+        ListNode l2 = new ListNode(new int[] {5, 6, 4});
+        ListNode sumNode = new AddTwoNumbers2().addTwoNumbers(l1, l2);
+        System.out.println(sumNode.toString());
     }
 }

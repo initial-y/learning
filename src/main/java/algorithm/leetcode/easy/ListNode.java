@@ -6,6 +6,7 @@ package algorithm.leetcode.easy;
  * @Author initial_yang
  * @Date 2020/4/15
  */
+@Deprecated
 public class ListNode {
     public int val;
     public ListNode next;
