@@ -1,15 +1,18 @@
 package algorithm.leetcode.easy;
 
-import java.util.Stack;
 import algorithm.leetcode.ListNode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @ClassName PalindromeLinkedList
  * @Descripiton
  * @Author initial_yang
  * @Date 2020/4/14
- * @no
+ * @no 234
  * @see https://leetcode-cn.com/problems/palindrome-linked-list-lcci/
+ * @see https://leetcode-cn.com/problems/palindrome-linked-list/
  */
 public class PalindromeLinkedList {
 
@@ -65,8 +68,7 @@ public class PalindromeLinkedList {
 
 
     public boolean isPalindrome2(ListNode head) {
-        // todo 翻转链表会改变head的引用
-        ListNode reverse = this.reverse(head);
+        ListNode reverse = this.reverse2(head);
         while (reverse != null && head != null) {
             if (reverse.val != head.val) {
                 return false;
@@ -77,15 +79,65 @@ public class PalindromeLinkedList {
         return true;
     }
 
+    /**
+     *  翻转链表会改变head的引用
+     * @param head
+     * @return
+     */
     private ListNode reverse(ListNode head) {
         ListNode reverse = null;
-        ListNode tmp = head;
-        while (tmp != null) {
-            ListNode cur = tmp.next;
-            tmp.next = reverse;
-            reverse = tmp;
-            tmp = cur;
+        while (head != null) {
+            ListNode cur = head.next;
+            head.next = reverse;
+            reverse = head;
+            head = cur;
         }
         return reverse;
+    }
+
+    /**
+     * 不改变head的引用
+     * @param head
+     * @return
+     */
+    private ListNode reverse2(ListNode head) {
+        ListNode reverse = null;
+        while (head != null) {
+            ListNode cur = new ListNode(head.val);
+            cur.next = reverse;
+            reverse = cur;
+            head = head.next;
+        }
+        return reverse;
+    }
+
+    /**
+     * 链表转List
+     * @param head
+     * @return
+     */
+    public boolean isPalindrome3(ListNode head) {
+        List<Integer> list = this.turnToList(head);
+
+        int start = 0, end = list.size() - 1;
+        // 需限制start <= end
+        while (start != end && start <= end) {
+            if (!list.get(start).equals(list.get(end))) {
+                return false;
+            }
+            start++;
+            end--;
+        }
+
+        return true;
+    }
+
+    private List<Integer> turnToList(ListNode head) {
+        List<Integer> list = new ArrayList<>();
+        while (head != null) {
+            list.add(head.val);
+            head = head.next;
+        }
+        return list;
     }
 }

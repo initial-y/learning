@@ -74,10 +74,11 @@ public class EasyTest {
     }
 
     @Test
-    public void test_isPalindrome2() {
+    public void test_isPalindrome() {
         PalindromeLinkedList palindromeLinkedList = new PalindromeLinkedList();
         ListNode l1 = new ListNode(new int[] {1, 2, 3, 4});
-        palindromeLinkedList.isPalindrome2(l1);
+        boolean flag = palindromeLinkedList.isPalindrome2(l1);
+        assertFalse(flag);
     }
 
     @Test
@@ -87,4 +88,20 @@ public class EasyTest {
         System.out.println(new ReverseLinkedList().reverseList(head));
     }
 
+    @Test
+    public void test_ListNode() {
+        ListNode node = new ListNode(new int[] {1,2,3,4});
+//        this.iterator(node);
+        while (node != null) {
+            node = node.next;
+        }
+        System.out.println(node);
+    }
+
+    private void iterator(ListNode node) {
+        ListNode cur = node;
+        while (node != null) {
+            node = node.next;
+        }
+    }
 }
