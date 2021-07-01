@@ -64,4 +64,11 @@ public class MediumTest {
         ListNode sumNode = new AddTwoNumbers2().addTwoNumbers(l1, l2);
         System.out.println(sumNode.toString());
     }
+
+    @Test
+    public void test_splitListToParts() {
+        ListNode head = new ListNode(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9 , 10});
+        ListNode[] arr = new SplitLinkedListInParts().splitListToParts(head, 3);
+        System.out.println(new Gson().toJson(arr));
+    }
 }
