@@ -3,7 +3,7 @@ package algorithm.leetcode.medium;
 import algorithm.leetcode.ListNode;
 
 /**
- * @author xin.yang2@dmall.com
+ * @author
  * @className SplitLinkedListInParts
  * @description
  * @date 2021/07/01
@@ -22,7 +22,7 @@ public class SplitLinkedListInParts {
             ListNode node = cur;
             if (cur != null) {
                 if (extraLength > 0) {
-                    // nodeLength
+                    // nodeLength, 循环至当前链表的最后一个节点
                     for (int j = 0; j < nodeLength; j++) {
                         cur = cur.next;
                     }
