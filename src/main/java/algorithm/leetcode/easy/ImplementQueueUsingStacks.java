@@ -12,37 +12,42 @@ import java.util.Stack;
  */
 public class ImplementQueueUsingStacks {
 
-    private Stack stack;
+    private Stack<Integer> in;
 
-    private int size;
+    private Stack<Integer> out;
+
 
 
     /** Initialize your data structure here. */
     public ImplementQueueUsingStacks() {
-
+        in = new Stack<>();;
+        out = new Stack<>();
     }
 
     /** Push element x to the back of queue. */
     public void push(int x) {
-
+        while (!in.isEmpty()) {
+            out.push(in.pop());
+        }
+        out.push(x);
+        while (!out.isEmpty()) {
+            in.push(out.pop());
+        }
     }
 
     /** Removes the element from in front of queue and returns that element. */
     public int pop() {
-
-        return 0;
+        return in.pop();
     }
 
     /** Get the front element. */
     public int peek() {
-
-        return 0;
+        return in.peek();
     }
 
     /** Returns whether the queue is empty. */
     public boolean empty() {
-
-        return false;
+        return in.isEmpty();
     }
 
 }

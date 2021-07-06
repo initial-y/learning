@@ -104,4 +104,9 @@ public class EasyTest {
             node = node.next;
         }
     }
+
+    @Test
+    public void test_ImplementQueueUsingStacks() {
+
+    }
 }
