@@ -12,26 +12,31 @@ import java.util.Stack;
  */
 public class MinStack {
     Stack<Integer> stack;
-    int min;
+    Stack<Integer> min;
 
     /** initialize your data structure here. */
     public MinStack() {
        stack = new Stack<>();
+       min = new Stack<>();
     }
 
     public void push(int val) {
         if (stack.isEmpty()) {
-            min = val;
+            min.push(val);
         } else {
-            if (val < min) {
-                min = val;
+            // <=: 为了处理最小值重复push的情况 push: 0,1,0
+            if (val <= min.peek()) {
+                min.push(val);
             }
         }
         stack.push(val);
     }
 
     public void pop() {
-        // todo 最小值pop了怎么办?
+        // 考虑最小值出栈的场景
+        if (stack.peek().equals(min.peek())) {
+            min.pop();
+        }
         stack.pop();
     }
 
@@ -40,7 +45,7 @@ public class MinStack {
     }
 
     public int getMin() {
-        return min;
+        return min.peek();
     }
 
 }
