@@ -71,4 +71,11 @@ public class MediumTest {
         ListNode[] arr = new SplitLinkedListInParts().splitListToParts(head, 3);
         System.out.println(new Gson().toJson(arr));
     }
+
+    @Test
+    public void test_nextGreaterElements() {
+        int[] arr = new int[] {1,2,3,4,3};
+        int[] result = new NextGreaterElement2().nextGreaterElements2(arr);
+        System.out.println(gson.toJson(result));
+    }
 }
