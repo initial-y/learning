@@ -78,4 +78,11 @@ public class MediumTest {
         int[] result = new NextGreaterElement2().nextGreaterElements2(arr);
         System.out.println(gson.toJson(result));
     }
+
+    @Test
+    public void test_dailyTemperatures() {
+        int[] arr = new int[]{30,40,50,60};
+        int[] result = new DailyTemperatures().dailyTemperatures1(arr);
+        System.out.println(gson.toJson(result));
+    }
 }
