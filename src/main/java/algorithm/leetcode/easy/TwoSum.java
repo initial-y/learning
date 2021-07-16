@@ -51,4 +51,23 @@ public class TwoSum {
         }
         return null;
     }
+
+    /**
+     * hash2
+     * 题设要求返回下标可以不注重顺序, 可以先不存hash
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int[] twoSum3(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>(nums.length);
+        for (int i = 0; i < nums.length; i++) {
+            int another = target - nums[i];
+            if (map.get(another) != null && map.get(another) != i) {
+                return new int[]{i, map.get(another)};
+            }
+            map.put(nums[i], i);
+        }
+        return null;
+    }
 }
