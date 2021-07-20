@@ -106,7 +106,8 @@ public class EasyTest {
     }
 
     @Test
-    public void test_ImplementQueueUsingStacks() {
-
+    public void test_LongestHarmoniousSubsequence() {
+        int[] arr = new int[]{1,4,1,3,1,-14,1,-13};
+        System.out.println(new LongestHarmoniousSubsequence().findLHS(arr));
     }
 }
