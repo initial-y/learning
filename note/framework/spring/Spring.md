@@ -1,45 +1,70 @@
 # Spring 
 
-## 反射
+## Spring IOC
+
+### 控制反转（IOC）
+
+在业务代码开发过程中, 通常由开发者主动声明实现类，通过new创建对象的方式获取对象，这种方式获取对象的控制权在我们自己。
+
+```java
+Demo demo = new Demo();
+```
+
+但在使用Spring的过程中，使用`BeanFactory`获取对象的方式就将获取对象的控制权交给了别人。这种将获取对象控制权交给别人的**思想**， 就叫做**控制反转（Inverse of Control)**。
+
+```java
+Demo demo = (Demo) BeanFactory.getBean("demo");
+```
+
+
+
+`BeanFactory`根据指定的`beanName`去获取对象的过程，就叫做**依赖查找（Dependency Lookup, DL）**。
+
+### 反射(Reflection)
+
 Java 的反射机制是指在运行状态中，对于任意一个类都能够知道这个类所有的属性和方法； 并且对于任意一个对象，都能够调用它的任意一个方法；这种动态获取信息以及动态调用对象方法的功能成为Java语言的反射机制。
-### Class对象
+
+反射是`Spring`实现控制反转的重要机制。
+
+#### Class对象
+
 每个类都有一个Class对象，每当编译一个新类就产生一个Class对象。比如：创建一个`ReflectionDemo`类，JVM就会创建一个`ReflectionDemo`类对应的Class对象，该Class对象保存了`ReflectionDemo`类相关的类型信息。
 
 Class类对象的作用是运行时提供或获取某个对象的类型信息。
 
-#### RTTI与RRTI
+##### RTTI与RRTI
 
 Java是如何让我们在运行时识别对象和类的信息？
 
 - RRTI：RRTI假定我们在编译器就知道所有的对象类型。
 - RTTI，**Run-Time Type Identification**，在运行时识别一个对象的类型和类的信息。
 
-### 反射的基本使用
+#### 反射的基本使用
 
-#### 获取Class对象
+##### 获取Class对象
 
-##### Class.forName静态方法
+###### Class.forName静态方法
 
 ```java
 Class clz = Class.forName("base.reflection.ReflectionDemo");
 ```
 
-##### 类的.class方法
+###### 类的.class方法
 
 ```java
 Class clz = ReflectionDemo.class;
 ```
 
-##### 实例对象的 getClass() 方法
+###### 实例对象的 getClass() 方法
 
 ```java
 ReflectionDemo demo = new ReflectionDemo();
 Class clz = demo.getClass();
 ```
 
-#### 反射获取类信息
+##### 反射获取类信息
 
-##### 创造对象
+###### 创造对象
 
 1. 通过Class的`newInstance()`方法
 
@@ -56,9 +81,9 @@ Constructor constructor = clz.getConstructor();
 ReflectionDemo demo1 = (ReflectionDemo) constructor.newInstance();
 ```
 
-##### 获取构造函数
+###### 获取构造函数
 
-![反射获取构造函数](imgs/反射获取构造器.png)
+![反射获取构造函数](D:/Code/IdeaProjects/learning/note/framework/spring/imgs/%E5%8F%8D%E5%B0%84%E8%8E%B7%E5%8F%96%E6%9E%84%E9%80%A0%E5%99%A8.png)
 
 1. 获取所有public的构造方法： `getConstructors()`
 
@@ -90,9 +115,9 @@ Class clz = Class.forName("base.reflection.ReflectionDemo");
 Constructor declaredParamConstructor = clz.getDeclaredConstructor(Integer.class);
 ```
 
-##### 获取方法
+###### 获取方法
 
-![反射获取方法](imgs/反射获取方法.png)
+![反射获取方法](D:/Code/IdeaProjects/learning/note/framework/spring/imgs/%E5%8F%8D%E5%B0%84%E8%8E%B7%E5%8F%96%E6%96%B9%E6%B3%95.png)
 
 1. 获得类的public类型的方法：`getMethods()`， 包括继承自Object类的方法
 
@@ -118,9 +143,9 @@ Constructor declaredParamConstructor = clz.getDeclaredConstructor(Integer.class)
    declaredMethod.invoke(clz.newInstance(), 1);
    ```
 
-##### 获取成员变量
+###### 获取成员变量
 
-![反射获取成员变量](imgs/反射获取成员变量.png)
+![反射获取成员变量](D:/Code/IdeaProjects/learning/note/framework/spring/imgs/%E5%8F%8D%E5%B0%84%E8%8E%B7%E5%8F%96%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F.png)
 
 1. 获得类的public属性：`getFields()`
 
@@ -151,9 +176,9 @@ Constructor declaredParamConstructor = clz.getDeclaredConstructor(Integer.class)
    Field declaredField = clz.getDeclaredField("param");
    ```
 
-### 反射原理
+#### 反射原理
 
-![反射调用invoke方法时序图](imgs/反射invoke方法执行时序图.png)
+![反射调用invoke方法时序图](D:/Code/IdeaProjects/learning/note/framework/spring/imgs/%E5%8F%8D%E5%B0%84invoke%E6%96%B9%E6%B3%95%E6%89%A7%E8%A1%8C%E6%97%B6%E5%BA%8F%E5%9B%BE.png)
 
 ```java
 	// 测试类的测试方法
@@ -272,9 +297,9 @@ class DelegatingMethodAccessorImpl extends MethodAccessorImpl {
     }
 ```
 
-### 反射应用
+#### 反射应用
 
-#### JDBC数据库连接
+##### JDBC数据库连接
 
 加载驱动，获得数据库连接
 
@@ -283,7 +308,7 @@ Class.forName("com.mysql.jdbc.Driver");
 Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "123456");
 ```
 
-#### Spring框架
+##### Spring框架
 
 Spring 通过 XML 配置模式装载 Bean，也是反射的一个典型例子。
 
@@ -296,9 +321,9 @@ Spring 通过 XML 配置模式装载 Bean，也是反射的一个典型例子。
 - 使用反射机制，得到Class实例
 - 动态配置实例的属性，使用
 
-### 反射存在的问题
+#### 反射存在的问题
 
-#### 安全问题
+##### 安全问题
 
 我们知道单例模式的设计过程中，会强调**将构造器设计为私有**，因为这样可以防止从外部构造对象。但是反射可以获取类中的域、方法、构造器，**修改访问权限**。所以这样并不一定是安全的。
 
@@ -322,11 +347,11 @@ Spring 通过 XML 配置模式装载 Bean，也是反射的一个典型例子。
 
 
 
-#### 性能问题
+##### 性能问题
 
 反射的性能并不好，原因主要是编译器没法对反射相关的代码做优化。
 
-## Spring IOC
+
 
 ## Spring AOP
 
