@@ -72,6 +72,10 @@
             <artifactId>gson</artifactId>
             <version>${com.google.code.gson.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
 
     </dependencies>
 
