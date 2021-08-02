@@ -1,10 +1,7 @@
 package algorithm.leetcode.medium;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author xin.yang
@@ -17,15 +14,25 @@ import java.util.stream.IntStream;
 public class LongestConsecutiveSequence {
 
     public int longestConsecutive(int[] nums) {
-        Map<Integer, Integer> numMap = new HashMap<>(nums.length * 2);
-        List<Integer> numsList = IntStream.of(nums).boxed().sorted().collect(Collectors.toList());
-        int prefix = numsList.get(0);
-        int cnt = 1;
-        for (int i = 1; i < numsList.size(); i++) {
-            if (numsList.get(i) - prefix == 1) {
-//                cnt
+        Set<Integer> numSet = new HashSet<>();
+        for (int num : nums) {
+            numSet.add(num);
+        }
+
+        int maxLength = 0;
+        for (Integer num : numSet) {
+            if (!numSet.contains(num - 1)) {
+                int cur = num;
+                int curLength = 1;
+
+                while (numSet.contains(cur + 1)) {
+                    cur++;
+                    curLength++;
+                }
+
+                maxLength = Math.max(maxLength, curLength);
             }
         }
-        return 0;
+        return maxLength;
     }
 }
