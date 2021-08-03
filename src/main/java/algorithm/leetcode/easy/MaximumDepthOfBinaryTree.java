@@ -13,11 +13,18 @@ import algorithm.leetcode.TreeNode;
  */
 public class MaximumDepthOfBinaryTree {
 
+    /**
+     * DFS
+     * @param root
+     * @return
+     */
     public int maxDepth(TreeNode root) {
         if (root == null) {
             return 0;
         }
-        return 0;
+        int leftDepth = this.maxDepth(root.left);
+        int rightDepth = this.maxDepth(root.right);
+        return Math.max(leftDepth, rightDepth) + 1;
     }
 
 }
