@@ -110,4 +110,10 @@ public class EasyTest {
         int[] arr = new int[]{1,4,1,3,1,-14,1,-13};
         System.out.println(new LongestHarmoniousSubsequence().findLHS(arr));
     }
+
+    @Test
+    public void test_validPalindrome() {
+        String s = "aydmda";
+        System.out.println(new ValidPalindrome2().validPalindrome(s));
+    }
 }
