@@ -116,4 +116,10 @@ public class EasyTest {
         String s = "aydmda";
         System.out.println(new ValidPalindrome2().validPalindrome(s));
     }
+
+    @Test
+    public void test_getKthFromEnd1() {
+        ListNode node = new ListNode(new int[] {1,2,3,4,5});
+        System.out.println(new GetKthFromEnd().getKthFromEnd1(node,2));
+    }
 }
