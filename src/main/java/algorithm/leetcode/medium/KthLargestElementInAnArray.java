@@ -1,6 +1,8 @@
 package algorithm.leetcode.medium;
 
 import java.util.Arrays;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 /**
  * @author initial.y
@@ -31,7 +33,20 @@ public class KthLargestElementInAnArray {
      */
     public int findKthLargest1(int[] nums, int k) {
 
-        return 0;
+        Queue<Integer> minHeap = new PriorityQueue<>(k);
+        for (int i = 0; i < nums.length; i++) {
+            if (i < k) {
+                minHeap.add(nums[i]);
+            } else {
+                int top = minHeap.peek();
+                if (top < nums[i]) {
+                    minHeap.poll();
+                    minHeap.add(nums[i]);
+                }
+
+            }
+        }
+        return minHeap.peek();
     }
 
     /**
