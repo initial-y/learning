@@ -85,4 +85,10 @@ public class MediumTest {
         int[] result = new DailyTemperatures().dailyTemperatures1(arr);
         System.out.println(gson.toJson(result));
     }
+
+    @Test
+    public void test_findKthLargest2() {
+        int[] arr = new int[] {3,2,1,5,6,4};
+        System.out.println(new KthLargestElementInAnArray().findKthLargest2(arr, 2));
+    }
 }

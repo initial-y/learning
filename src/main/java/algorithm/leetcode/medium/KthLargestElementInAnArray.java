@@ -50,14 +50,47 @@ public class KthLargestElementInAnArray {
     }
 
     /**
-     * 快速选择
+     * 快速排序
      * @param nums
      * @param k
      * @return
      */
     public int findKthLargest2(int[] nums, int k) {
+        this.quickSort(nums, 0, nums.length - 1);
+        return nums[nums.length - k];
+    }
 
-        return 0;
+
+    /**
+     * 快速排序
+     * @param arr
+     * @param low
+     * @param high
+     */
+    public void quickSort(int[] arr, int low, int high) {
+        if (low < high) {
+            int index = partition(arr, low, high);
+            quickSort(arr, low, index -1);
+            quickSort(arr, index + 1, high);
+        }
+    }
+
+    private int partition(int[] arr, int low, int high) {
+        int index = low + 1;
+        for (int i = index; i <= high; i++) {
+            if (arr[i] < arr[low]) {
+                swap(arr, i, index);
+                index++;
+            }
+        }
+        swap(arr, low, index -1);
+        return index - 1;
+    }
+
+    private void swap(int[] arr, int i, int j) {
+        int tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
     }
 
 }
