@@ -68,6 +68,7 @@ public class KthLargestElementInAnArray {
      * @param high
      */
     public void quickSort(int[] arr, int low, int high) {
+        // 必须小于
         if (low < high) {
             int index = partition(arr, low, high);
             quickSort(arr, low, index -1);
@@ -75,9 +76,18 @@ public class KthLargestElementInAnArray {
         }
     }
 
+    /**
+     * 分区算法,选出描定点
+     * @param arr
+     * @param low
+     * @param high
+     * @return
+     */
     private int partition(int[] arr, int low, int high) {
-        int index = low + 1;
-        for (int i = index; i <= high; i++) {
+        // 默认描定点为low
+        int index = low;
+        // 从low+1开始遍历, 将数组分成大于等于描定点, 小于描定点的2份
+        for (int i = low + 1; i <= high; i++) {
             if (arr[i] < arr[low]) {
                 swap(arr, i, index);
                 index++;
