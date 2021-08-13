@@ -91,4 +91,11 @@ public class MediumTest {
         int[] arr = new int[] {3,2,1,5,6,4};
         System.out.println(new KthLargestElementInAnArray().findKthLargest2(arr, 2));
     }
+
+    @Test
+    public void test_quickSort() {
+        int[] arr = new int[]{6, 4, 2, 3, 5, 0};
+        new KthLargestElementInAnArray().quickSort(arr, 0, arr.length - 1);
+        System.out.println(arr);
+    }
 }
