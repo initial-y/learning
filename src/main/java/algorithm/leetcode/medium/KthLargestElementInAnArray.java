@@ -58,6 +58,7 @@ public class KthLargestElementInAnArray {
      */
     public int findKthLargest2(int[] nums, int k) {
         this.quickSort(nums, 0, nums.length - 1);
+        System.out.println(Arrays.toString(Arrays.stream(nums).toArray()));
         return nums[nums.length - k];
     }
 
@@ -71,13 +72,14 @@ public class KthLargestElementInAnArray {
     public void quickSort(int[] arr, int low, int high) {
         // 必须小于
         if (low < high) {
-            int index = partition(arr, low, high);
+            int index = partition3(arr, low, high);
             quickSort(arr, low, index -1);
             quickSort(arr, index + 1, high);
         }
     }
 
     /**
+     * partition 1.0
      * 分区算法,选出描定点
      * 默认时间复杂度O(nlogn), 递归深度O(logn)
      * <p>
@@ -103,7 +105,11 @@ public class KthLargestElementInAnArray {
     }
 
     /**
+     * partition 2.0
      * partition优化版, 使用Random随机数
+     * <p>
+     *     问题: 当arr值完全一样时时间复杂度退化为O(n^2)
+     * </p>
      * @param arr
      * @param low
      * @param high
@@ -124,17 +130,78 @@ public class KthLargestElementInAnArray {
         return index;
     }
 
+    /**
+     * partition 2.1
+     * 快速排序优化-交换最左侧和中间元素后再partition
+     * @param arr
+     * @param low
+     * @param high
+     * @return
+     */
     private int partition2(int[] arr, int low, int high) {
         // 随机交换中间的元素
         swap(arr, low, low + (high - low) / 2);
         int index = low;
         for (int i = low + 1; i <= high ; i++) {
             if (arr[i] < arr[low]) {
-
+                index++;
+                swap(arr, i, index);
             }
         }
+        swap(arr, low, index);
         return index;
     }
+
+    /**
+     * partition 3.0
+     * 双路快排
+     * @param arr
+     * @param l
+     * @param r
+     * @return
+     */
+    private int partition3(int[] arr, int l, int r) {
+
+        // 修改描定点为[low,high - low]间的随机值
+//        int rand = l + new Random().nextInt(r - l + 1);
+//        swap(arr, l, rand);
+
+        int low = l + 1, high = r;
+//        while (low < high) {
+//            if (arr[low] > arr[l] && arr[high] < arr[l]) {
+//                swap(arr, low, high);
+//                low++;
+//                high--;
+//            } else if (arr[low] > arr[l] && arr[high] >= arr[l]){
+//                high--;
+//            } else if (arr[low] <= arr[l] && arr[high] < arr[l]) {
+//                low++;
+//            } else {
+//                low++;
+//                high--;
+//            }
+//        }
+
+        while (true) {
+            while (low <= high && arr[low] < arr[l]) {
+                low++;
+            }
+            while (low <= high && arr[high] > arr[l]) {
+                high--;
+            }
+            if (low >= high) {
+                break;
+            }
+            swap(arr, low, high);
+            low++;
+            high--;
+        }
+
+        // 此时high指向的元素是数组中最后一个小于l的元素, low指向的元素是数组中第一个大于l的元素
+        swap(arr, l, high);
+        return high;
+    }
+
 
     private void swap(int[] arr, int i, int j) {
         int tmp = arr[i];
