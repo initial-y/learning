@@ -1,8 +1,7 @@
 package spring.ioc.dependency;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 /**
  * @author initial.y
@@ -13,7 +12,19 @@ import javax.annotation.Resource;
 @Component
 public class ComponentB {
 
-    @Resource
     private ComponentA componentA;
+
+    /**
+     * 构造器注入启动时会抛出循环依赖错误
+     * @param componentA
+     */
+    @Autowired
+    public ComponentB(ComponentA componentA) {
+        this.componentA = componentA;
+    }
+
+    public void methodB() {
+
+    }
 
 }

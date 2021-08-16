@@ -1,8 +1,7 @@
 package spring.ioc.dependency;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 /**
  * @author initial.y
@@ -13,6 +12,14 @@ import javax.annotation.Resource;
 @Component
 public class ComponentA {
 
-    @Resource
     private ComponentB componentB;
+
+    @Autowired
+    public ComponentA(ComponentB componentB) {
+        this.componentB = componentB;
+    }
+
+    public void methodA() {
+        componentB.methodB();
+    }
 }

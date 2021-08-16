@@ -14,9 +14,17 @@ import java.util.stream.Stream;
 @EnableAspectJAutoProxy(exposeProxy = true)
 public class DependencyApplication {
 
+
     public static void main(String[] args) {
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext("spring.ioc.dependency");
         String[] beanDefinitionNames = ctx.getBeanDefinitionNames();
         Stream.of(beanDefinitionNames).forEach(System.out::println);
+
+        ComponentA componentA = ctx.getBean(ComponentA.class);
+        componentA.methodA();
+
+        ComponentB componentB = ctx.getBean(ComponentB.class);
+        componentB.methodB();
+
     }
 }
