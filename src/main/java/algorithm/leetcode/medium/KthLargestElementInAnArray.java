@@ -163,8 +163,8 @@ public class KthLargestElementInAnArray {
     private int partition3(int[] arr, int l, int r) {
 
         // 修改描定点为[low,high - low]间的随机值
-//        int rand = l + new Random().nextInt(r - l + 1);
-//        swap(arr, l, rand);
+        int rand = l + new Random().nextInt(r - l + 1);
+        swap(arr, l, rand);
 
         int low = l + 1, high = r;
 //        while (low < high) {
@@ -189,6 +189,7 @@ public class KthLargestElementInAnArray {
             while (low <= high && arr[high] > arr[l]) {
                 high--;
             }
+            // 这种情况不处理
             if (low >= high) {
                 break;
             }
@@ -201,6 +202,45 @@ public class KthLargestElementInAnArray {
         swap(arr, l, high);
         return high;
     }
+
+    /**
+     * 三路快排
+     * @param arr
+     * @param l
+     * @param r
+     * @return
+     */
+    private void sort3ways(int[] arr, int l, int r) {
+        if (l >= r) {
+            return;
+        }
+        int rand = l + new Random().nextInt(r - l + 1);
+        swap(arr, l, rand);
+
+        // arr[l+1,lt] < v, arr[lt+1, i -1]==v, arr[gt,r]>v
+        int lt = l, i = l + 1, gt = r + 1;
+        while (i < gt) {
+            if (arr[i] < arr[l]) {
+                lt++;
+                swap(arr, i, lt);
+                i++;
+            } else if (arr[i] > arr[l]) {
+                gt--;
+                swap(arr, i, gt);
+                // 此时i不加1
+//                i++;
+            } else {
+                // arr[i]=arr[l]
+                i++;
+            }
+        }
+        // 交换后arr[l+1,lt-1] < v, arr[lt, gt -1]==v, arr[gt,r]>v
+        swap(arr, l, lt);
+        // 中间部分不递归调用
+        sort3ways(arr, l, lt - 1);
+        sort3ways(arr, gt, r);
+    }
+
 
 
     private void swap(int[] arr, int i, int j) {
