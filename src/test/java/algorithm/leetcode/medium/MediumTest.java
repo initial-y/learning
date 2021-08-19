@@ -98,4 +98,11 @@ public class MediumTest {
         new KthLargestElementInAnArray().quickSort(arr, 0, arr.length - 1);
         System.out.println(arr);
     }
+
+    @Test
+    public void test_sortColors() {
+        int[] arr = new int[] {4,5,4,2,5,1,5};
+        new SortColors().sortColors1(arr);
+        System.out.println(arr);
+    }
 }
