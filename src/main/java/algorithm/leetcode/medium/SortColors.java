@@ -81,10 +81,10 @@ public class SortColors {
 
         int i = l + 1, j = r;
         while (i <= j) {
-            while (nums[i] < nums[l]) {
+            while (i < j &&  nums[i] < nums[l]) {
                 i++;
             }
-            while (nums[j] > nums[l]) {
+            while (i < j && nums[j] > nums[l]) {
                 j--;
             }
             swap(nums, i, j);

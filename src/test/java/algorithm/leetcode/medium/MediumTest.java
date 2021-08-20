@@ -4,8 +4,7 @@ import algorithm.leetcode.ListNode;
 import com.google.gson.Gson;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
@@ -101,8 +100,15 @@ public class MediumTest {
 
     @Test
     public void test_sortColors() {
-        int[] arr = new int[] {4,5,4,2,5,1,5};
+        int[] arr = new int[] {4,1,2};
         new SortColors().sortColors1(arr);
         System.out.println(arr);
+    }
+
+    @Test
+    public void test_priorityQueue() {
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>(Arrays.asList(6,5,4,3,2,1,10));
+        System.out.println(minHeap.peek());
+        System.out.println(minHeap.toString());
     }
 }

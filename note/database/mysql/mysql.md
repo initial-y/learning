@@ -148,7 +148,7 @@ MySQL8.0移除了查询缓存的功能。
 1. 原子性(atomicity):一个事务必须被视为一个不可分割的最小工作单元，整个事务中的所有操作要么全部提交成功，要么全部失败，对于一个事务来说，不可能只执行其中的一部分操作
 
 2. 一致性(consistency)：一致性是指事务将数据库从一种一致性状态转换到另一种一致性状态，在事物开始之前和事务结束后数据库中的数据的完整性没有被破坏
-      
+   
       > 在每次提交或回滚之后以及正在进行的事务处理期间，数据库始终保持一致状态，如果跨多个表更新了相关数据，则查询将看到所有旧值或所有新值，而不是新旧值的混合。
 3. 隔离性(isolation)：隔离性要求一个事务对数据库中数据的修改，在未提交完成前对其他事务是不可见的
 
@@ -334,7 +334,7 @@ InnoDB允许某个表上共存表级锁和行级锁。
 - 如果某个表没有加上意向锁，仍需遍历判断每一行是否加上行锁；
 - 如果某个表已经存在意向锁，**无需遍历每一行数据， 只需判断意向锁是否兼容**就可以得出是否冲突的结果。
 
-#### [Record Locks](https://dev.mysql.com/doc/refman/5.7/en/innodb-locking.html#innodb-record-locks)
+#### [记录锁(Record Locks)](https://dev.mysql.com/doc/refman/5.7/en/innodb-locking.html#innodb-record-locks)
 
 记录锁，是对**索引**记录的锁定。
 
@@ -346,7 +346,7 @@ InnoDB允许某个表上共存表级锁和行级锁。
 
 > 没有指定索引的表，MySQL会创建一个隐藏的聚簇索引，记录锁就对这个索引进行加锁。
 
-#### [Gap Locks](https://dev.mysql.com/doc/refman/5.7/en/innodb-locking.html#innodb-gap-locks)
+#### [间隙锁(Gap Locks)](https://dev.mysql.com/doc/refman/5.7/en/innodb-locking.html#innodb-gap-locks)
 
 间隙锁，用于锁定索引记录之间的间隙， 或者锁定第一条记录之前（-∞，first]/最后一条记录之后（last, +∞]的区间。间隙可以跨越单个索引值，多个索引值，也可以为空。
 
@@ -392,7 +392,7 @@ InnoDB允许某个表上共存表级锁和行级锁。
 
 
 
-#### [Insert Intention Locks](https://dev.mysql.com/doc/refman/5.7/en/innodb-locking.html#innodb-insert-intention-locks)
+#### [插入意向锁(Insert Intention Locks)](https://dev.mysql.com/doc/refman/5.7/en/innodb-locking.html#innodb-insert-intention-locks)
 
 #### [AUTO-INC Locks](https://dev.mysql.com/doc/refman/5.7/en/innodb-locking.html#innodb-auto-inc-locks)
 
@@ -998,3 +998,4 @@ id	name	age	row_number	rank	dense_rank
 - [Assignment Operators](https://dev.mysql.com/doc/refman/8.0/en/assignment-operators.html)
 - [Window Function Descriptions](https://dev.mysql.com/doc/refman/8.0/en/window-function-descriptions.html#function_rank)
 - [MySQL实战45讲](https://time.geekbang.org/column/intro/139)
+- [MySQL索引原理及慢查询优化](https://tech.meituan.com/2014/06/30/mysql-index.html)
