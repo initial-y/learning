@@ -111,4 +111,10 @@ public class MediumTest {
         System.out.println(minHeap.peek());
         System.out.println(minHeap.toString());
     }
+
+    @Test
+    public void test_frequencySort() {
+        String str = new SortCharactersByFrequency().frequencySort("tree");
+        System.out.println(str);
+    }
 }
