@@ -210,7 +210,7 @@ public class KthLargestElementInAnArray {
      * @param r
      * @return
      */
-    private void sort3ways(int[] arr, int l, int r) {
+    public void sort3ways(int[] arr, int l, int r) {
         if (l >= r) {
             return;
         }

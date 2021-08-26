@@ -117,4 +117,11 @@ public class MediumTest {
         String str = new SortCharactersByFrequency().frequencySort("tree");
         System.out.println(str);
     }
+
+    @Test
+    public void test_sortBy3Ways() {
+        int[] arr = new int[]{6, 4, 2, 3, 5, 0};
+        new KthLargestElementInAnArray().sort3ways(arr, 0, arr.length - 1);
+        System.out.println(Arrays.toString(arr));
+    }
 }
