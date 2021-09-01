@@ -215,7 +215,7 @@ System.gc();
 
 `ThreadLocal`中的静态内部类`ThreadLocalMap`里的`entry`使用了`WeakReference`。
 
-虚引用（Phantom Reference）
+##### 虚引用（Phantom Reference）
 
 虚引用也被称为幽灵引用或幻影引用，它是所有引用中最弱的一种引用关系。一个对象是否有虚引用存在，完全不会对这个对象的生存时间造成影响，也无法通过虚引用来取得一个对象实例。为一个对象设置虚引用关联的**唯一目的**是：在这个对象被收集器回收时能收到一个系统通知。Java中通过`PhantomReference`来实现虚引用。
 
