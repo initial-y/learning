@@ -17,12 +17,7 @@ public class BinaryTreePostorderTraversal {
 
     public List<Integer> postorderTraversal(TreeNode root) {
         List<Integer> nodeList = new ArrayList<>();
-        if (root != null) {
-            this.dfs(root.left, nodeList);
-            this.dfs(root.right, nodeList);
-            nodeList.add(root.val);
-        }
-
+        this.dfs(root, nodeList);
         return nodeList;
     }
 

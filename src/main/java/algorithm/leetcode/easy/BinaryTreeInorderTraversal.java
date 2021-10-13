@@ -17,12 +17,7 @@ public class BinaryTreeInorderTraversal {
 
     public List<Integer> inorderTraversal(TreeNode root) {
         List<Integer> nodeList = new ArrayList<>();
-        if (root != null) {
-            this.dfs(root.left, nodeList);
-            nodeList.add(root.val);
-            this.dfs(root.right, nodeList);
-        }
-
+        this.dfs(root,nodeList);
         return nodeList;
     }
 

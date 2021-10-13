@@ -17,12 +17,7 @@ public class BinaryTreePreorderTraversal {
 
     public List<Integer> preorderTraversal(TreeNode root) {
         List<Integer> nodeList = new ArrayList<>();
-        if (root != null) {
-            nodeList.add(root.val);
-            this.dfs(root.left, nodeList);
-            this.dfs(root.right, nodeList);
-        }
-
+        this.dfs(root, nodeList);
         return nodeList;
     }
 
