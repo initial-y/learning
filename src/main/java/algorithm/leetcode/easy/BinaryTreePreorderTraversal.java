@@ -2,8 +2,7 @@ package algorithm.leetcode.easy;
 
 import algorithm.leetcode.TreeNode;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 二叉树-前序遍历
@@ -15,6 +14,11 @@ import java.util.List;
  */
 public class BinaryTreePreorderTraversal {
 
+    /**
+     * 递归
+     * @param root
+     * @return
+     */
     public List<Integer> preorderTraversal(TreeNode root) {
         List<Integer> nodeList = new ArrayList<>();
         this.dfs(root, nodeList);
@@ -27,5 +31,31 @@ public class BinaryTreePreorderTraversal {
             this.dfs(node.left, nodeList);
             this.dfs(node.right, nodeList);
         }
+    }
+
+
+    /**
+     * 迭代
+     * @param root
+     * @return
+     */
+    public List<Integer> preorderTraversal1(TreeNode root) {
+        List<Integer> result = new LinkedList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode cur = root;
+        while (cur != null || !stack.isEmpty()) {
+            // 沿着**当前TreeNode**一直到最左侧叶节点
+            while (cur != null) {
+                // 根在前
+                result.add(cur.val);
+                stack.push(cur);
+                cur = cur.left;
+            }
+            // 从最左叶节点开始遍历
+            cur = stack.pop();
+            cur = cur.right;
+        }
+
+        return result;
     }
 }
