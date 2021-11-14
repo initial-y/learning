@@ -3,6 +3,7 @@ package algorithm.leetcode.easy;
 import algorithm.leetcode.TreeNode;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
@@ -22,8 +23,32 @@ public class BinaryTreeLevelOrderTraversal {
      * @return
      */
     public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> orderList = new ArrayList<>();
+        if (root == null) {
+            return orderList;
+        }
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        queue.add(root);
 
-        return null;
+        while (!queue.isEmpty()) {
+            // levelSize记录该层的叶节点个数
+            int levelSize = queue.size();
+
+            List<Integer> levelList = new ArrayList<>();
+            // 循环当前层, 并把下一层节点加入queue
+            for (int i = 0; i < levelSize; i++) {
+                TreeNode node = queue.poll();
+                levelList.add(node.val);
+                if (node.left != null) {
+                    queue.add(node.left);
+                }
+                if (node.right != null) {
+                    queue.add(node.right);
+                }
+            }
+            orderList.add(levelList);
+        }
+        return orderList;
     }
 
 
@@ -37,6 +62,7 @@ public class BinaryTreeLevelOrderTraversal {
         queue.add(root);
 
         while (!queue.isEmpty()) {
+            // 出队
             TreeNode node = queue.poll();
             if (node.left != null) {
                 queue.add(node.left);

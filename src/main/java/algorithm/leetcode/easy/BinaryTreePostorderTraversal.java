@@ -70,4 +70,23 @@ public class BinaryTreePostorderTraversal {
         return nodeList;
     }
 
+    /**
+     * 后续遍历查看二叉树最大层数
+     * <p>
+     *     “自底向上” 是另一种递归方法。 在每个递归层次上，我们首先对所有子节点递归地调用函数，然后根据返回值和根节点本身的值得到答案。
+     * </p>
+     * @param root
+     * @return
+     */
+    public int maxDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+
+        int left = maxDepth(root.left);
+        int right = maxDepth(root.right);
+
+        return Math.max(left, right) + 1;
+    }
+
 }
