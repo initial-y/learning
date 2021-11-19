@@ -24,7 +24,7 @@ public class ConstructBinaryTreeFromPreorderAndInorderTraversal {
         // 根据根节点将中序一分为2
         int rootIndex = 0;
         int rootValue = preorder[preLow];
-        for (int i = inLow; i < inHigh; i++) {
+        for (int i = inLow; i <= inHigh; i++) {
             if (rootValue == inorder[i]) {
                 rootIndex = i;
             }
