@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className BackfielderConfiguration
  * @description
  * @date 2021/09/16

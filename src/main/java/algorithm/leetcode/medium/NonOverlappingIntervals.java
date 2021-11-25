@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className NonOverlappingIntervals
  * @description
  * @date 2021/08/24

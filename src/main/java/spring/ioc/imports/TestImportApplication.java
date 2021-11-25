@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 /**
  * 模块装配测试
- * @author xin.yang
+ * @author initial.y
  * @className TestImportApplication
  * @description
  * @date 2021/09/16

@@ -4,7 +4,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className LifecycleDestructionAwareBeanPostProcessor
  * @description
  * @date 2021/09/22

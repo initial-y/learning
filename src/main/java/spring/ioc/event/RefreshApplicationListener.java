@@ -5,7 +5,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className RefreshApplicationListener
  * @description
  * @date 2021/09/15

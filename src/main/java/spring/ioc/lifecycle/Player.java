@@ -8,7 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className Player
  * @description test bean lifecycle
  * @date 2021/09/22

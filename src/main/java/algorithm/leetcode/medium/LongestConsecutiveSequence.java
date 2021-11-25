@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className LongestConsecutiveSequence
  * @description
  * @date 2021/08/02

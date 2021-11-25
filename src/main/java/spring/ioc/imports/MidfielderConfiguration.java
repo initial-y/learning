@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  *  @Configruation +@Bean本身会注入容器
  *  @Import 可以转配配置Bean
- * @author xin.yang
+ * @author initial.y
  * @className MidfielderConfiguration
  * @description
  * @date 2021/09/16

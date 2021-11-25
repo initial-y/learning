@@ -4,7 +4,7 @@ import org.springframework.context.annotation.ImportSelector;
 import org.springframework.core.type.AnnotationMetadata;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className BackfielderImportSelector
  * @description
  * @date 2021/09/16

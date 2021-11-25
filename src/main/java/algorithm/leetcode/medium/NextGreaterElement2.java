@@ -6,7 +6,7 @@ import java.util.Stack;
 /**
  * @className NextGreaterElement2
  * @description 
- * @author xin.yang
+ * @author initial.y
  * @date 2021/07/09
  * @num 503
  * @link

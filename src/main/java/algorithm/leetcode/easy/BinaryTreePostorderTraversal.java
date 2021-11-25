@@ -9,7 +9,7 @@ import java.util.Stack;
 
 /**
  * 二叉树-后续遍历
- * @author xin.yang
+ * @author initial.y
  * @className BinaryTreePostorderTraversal
  * @description
  * @date 2021/10/11

@@ -5,7 +5,7 @@ import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className CoachCondition
  * @description
  * @date 2021/09/16

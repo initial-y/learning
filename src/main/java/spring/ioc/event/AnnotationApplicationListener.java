@@ -7,7 +7,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className AnnotationApplicationListener
  * @description
  * @date 2021/09/15

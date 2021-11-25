@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
  *  - 一般用于某个线程 (比如main线程) 等待若干个其他线程执行完任务之后，它才执行;
  *  - countDown()方法不会阻塞线程, 只做计数用
  *
- * @author xin.yang
+ * @author initial.y
  * @className CyclicBarrierCountDownLatchTest
  * @description
  * @date 2021/09/08

@@ -5,7 +5,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import java.util.stream.Stream;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className TestConditionalApplication
  * @description
  * @date 2021/09/16

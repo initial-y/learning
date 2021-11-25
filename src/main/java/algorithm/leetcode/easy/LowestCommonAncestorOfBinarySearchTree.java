@@ -3,7 +3,7 @@ package algorithm.leetcode.easy;
 import algorithm.leetcode.TreeNode;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className LowestCommonAncestorOfABinarySearchTree
  * @description
  * @date 2021/11/22

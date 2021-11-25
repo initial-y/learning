@@ -3,7 +3,7 @@ package spring.ioc.imports;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className SoccerConfiguration
  * @description
  * @date 2021/09/16

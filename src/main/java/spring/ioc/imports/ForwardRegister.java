@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className ForwardRegister
  * @description
  * @date 2021/09/16

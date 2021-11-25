@@ -5,7 +5,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className LifecycleSourceConfiguration
  * @description
  * @date 2021/09/22

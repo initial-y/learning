@@ -6,7 +6,7 @@ import java.util.Deque;
 /**
  * @className DailyTemperatures
  * @description 
- * @author xin.yang
+ * @author initial.y
  * @date 2021/07/08
  * @num 739
  * @link https://leetcode-cn.com/problems/daily-temperatures

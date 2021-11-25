@@ -5,7 +5,7 @@ import java.util.Stack;
 /**
  * @className MinStack
  * @description 
- * @author xin.yang
+ * @author initial.y
  * @date 2021/07/06
  * @num 155
  * @link https://leetcode-cn.com/problems/min-stack/description/

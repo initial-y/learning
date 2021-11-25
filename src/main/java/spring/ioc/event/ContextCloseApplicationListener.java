@@ -5,7 +5,7 @@ import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.stereotype.Component;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className ContextCloseApplicationListener
  * @description
  * @date 2021/09/15

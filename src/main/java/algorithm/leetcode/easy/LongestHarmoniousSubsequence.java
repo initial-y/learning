@@ -5,7 +5,7 @@ import java.util.HashMap;
 /**
  * @className LongestHarmoniousSubsequence
  * @description 
- * @author xin.yang
+ * @author initial.y
  * @date 2021/07/16
  * @num 594
  * @link https://leetcode-cn.com/problems/longest-harmonious-subsequence/description/

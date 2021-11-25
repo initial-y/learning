@@ -4,7 +4,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className UserRegisterSendMailListener
  * @description
  * @date 2021/09/15

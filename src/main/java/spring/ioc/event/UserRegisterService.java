@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Component;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className UserRegisterService
  * @description
  * @date 2021/09/15

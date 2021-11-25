@@ -59,5 +59,10 @@ public class Tests {
         System.out.println(union);
     }
 
+    @Test
+    public void testInteger() {
+        Integer i = null;
+        System.out.println(i==1);
+    }
 
 }

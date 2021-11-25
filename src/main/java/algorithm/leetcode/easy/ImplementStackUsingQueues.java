@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * @className ImplementStackUsingQueues
  * @description 
- * @author xin.yang
+ * @author initial.y
  * @date 2021/07/06
  * @num 225
  * @link https://leetcode-cn.com/problems/implement-stack-using-queues

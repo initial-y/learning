@@ -3,7 +3,7 @@ package spring.ioc.lifecycle;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className TestLifecycleApplication
  * @description
  * @date 2021/09/22

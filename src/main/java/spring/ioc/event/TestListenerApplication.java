@@ -3,7 +3,7 @@ package spring.ioc.event;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className TestListenerApplication
  * @description
  * @date 2021/09/15

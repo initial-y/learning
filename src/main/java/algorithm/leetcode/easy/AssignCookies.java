@@ -3,7 +3,7 @@ package algorithm.leetcode.easy;
 import java.util.Arrays;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className AssignCookies
  * @description
  * @date 2021/08/24

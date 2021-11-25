@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 /**
- * @author xin.yang
+ * @author initial.y
  * @className CoachConfiguration
  * @description
  * @date 2021/09/16
