@@ -65,4 +65,79 @@ public class Tests {
         System.out.println(i==1);
     }
 
+    @Test
+    public void testMap() {
+        Map<Integer, Integer> map = new HashMap<>();
+        int max = 0;
+        Object[] arr = map.values().toArray();
+        for (int i = 0; i < arr.length; i++) {
+            int num = (int) arr[i];
+            if (num > max) {
+                max = num;
+            }
+        }
+
+        int[] result = new int[max];
+        int finalMax = max;
+        int idx = 0;
+        List<Integer> list = new ArrayList<>();
+        map.keySet().forEach(k -> {
+            Integer v =map.get(k);
+            if (v == finalMax) {
+                list.add(k);
+            }
+        });
+        for (int i = 0; i < list.size(); i++) {
+            result[i] = list.get(i);
+        }
+    }
+
+
+    @Test
+    public void test() {
+        String[] words = new String[]{"apple","iOS","dog","nana","man","good","goodman"};
+        System.out.println(longestWord(words));
+    }
+
+
+    private HashMap<String, Integer> wordNumMap = new HashMap<>();
+    private HashMap<String, Integer> wordLengthMap = new HashMap<>();
+    public String longestWord (String[] words) {
+        // write code here
+
+        for (String word : words) {
+            for (String s : words) {
+                if (!word.equals(s) &&word.contains(s)) {
+                    wordNumMap.put(word, wordNumMap.getOrDefault(word, 0) + 1);
+                    wordLengthMap.put(word, wordLengthMap.getOrDefault(word, 0) + s.length());
+                }
+            }
+        }
+
+        Integer max = wordNumMap.values().stream().max(Comparator.comparing(Integer::intValue)).get();
+        System.out.println(max);
+        Arrays.sort(words);
+        for (String word : words) {
+            if (wordNumMap.getOrDefault(word, 0).equals(max)) {
+                if (wordLengthMap.getOrDefault(word, 0).equals(word.length())) {
+                    return word;
+                }
+            }
+        }
+        return "";
+    }
+
+
+    @Test
+    public void testString() {
+        String str1= "abc";
+        String str2= new String("abc");
+        String str3= str2.intern();
+        System.out.println(str1==str2);
+        System.out.println(str2==str3);
+        System.out.println(str1==str3);
+        System.out.println(str1==str2.intern());
+    }
+
+
 }
