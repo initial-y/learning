@@ -14,13 +14,13 @@ public class ClassLoaderTest {
 
     @SneakyThrows
     public static void main(String[] args) {
-        // AppClassLoader
+        // AppClassLoader 应用类加载器
         ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
         System.out.println("systemClassLoader: " + systemClassLoader);
-        // AppClassLoader
+        // AppClassLoader 应用类加载器
         ClassLoader classLoaderTestLoader = ClassLoaderTest.class.getClassLoader();
         System.out.println("classLoaderTestLoader:" + classLoaderTestLoader);
-        // ExtClassLoader
+        // ExtClassLoader 扩展类加载器
         ClassLoader parentClassLoader = classLoaderTestLoader.getParent();
         System.out.println("parentClassLoader: " + parentClassLoader);
         // null
@@ -42,6 +42,8 @@ public class ClassLoaderTest {
                 is.read(bytes);
                 return defineClass(name, bytes, 0, bytes.length);
             }
+
+
         };
         // 测试不同类加载器实例化对象是否一致: 不一致
         Object myClassLoaderTest = myClassLoader.loadClass("jvm.ClassLoaderTest");
