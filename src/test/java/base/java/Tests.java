@@ -140,4 +140,43 @@ public class Tests {
     }
 
 
+    public boolean checkInclusion(String t, String s) {
+        Map<Character, Integer> window = new HashMap<>();
+        Map<Character, Integer> need = new HashMap<>();
+        for (char c : t.toCharArray()) {
+            need.put(c, 1);
+        }
+
+        int left = 0, right = 0;
+        int valid = 0;
+        while (right < s.length()) {
+            char r = s.charAt(right);
+            right++;
+
+            if (need.containsKey(r)) {
+                window.put(r, window.getOrDefault(r, 0) + 1);
+                if (window.get(r).equals(need.get(r))) {
+                    valid++;
+                }
+            }
+
+            while (right - left >= t.length()) {
+                if (valid == need.size()) {
+                    return true;
+                }
+                char l = s.charAt(left);
+                left++;
+                if (need.containsKey(l) ) {
+                    if (need.get(l).equals(window.get(l))) {
+                        valid--;
+                    }
+                    window.put(l, window.getOrDefault(l, 0) - 1);
+                }
+            }
+
+        }
+        return false;
+    }
+
+
 }
